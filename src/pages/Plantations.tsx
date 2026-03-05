@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Plantation, Farmer, InspectionType } from '@/types/database';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -37,8 +37,8 @@ const Plantations = () => {
       supabase.from('farmers').select('*').eq('id', farmerId).single(),
     ]);
     if (pRes.error) toast.error(pRes.error.message);
-    else setPlantations(pRes.data || []);
-    if (fRes.data) setFarmer(fRes.data);
+    else setPlantations((pRes.data as unknown as Plantation[]) || []);
+    if (fRes.data) setFarmer(fRes.data as unknown as Farmer);
     setLoading(false);
   };
 
