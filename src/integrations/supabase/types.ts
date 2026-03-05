@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      farmers: {
+        Row: {
+          account_no: string | null
+          address: string | null
+          bank: string | null
+          branch: string | null
+          contract: string | null
+          created_at: string
+          district: string | null
+          farmer_name: string
+          farmer_no: string | null
+          id: string
+          inspector_id: string
+          province: string | null
+          subdistrict: string | null
+        }
+        Insert: {
+          account_no?: string | null
+          address?: string | null
+          bank?: string | null
+          branch?: string | null
+          contract?: string | null
+          created_at?: string
+          district?: string | null
+          farmer_name: string
+          farmer_no?: string | null
+          id?: string
+          inspector_id: string
+          province?: string | null
+          subdistrict?: string | null
+        }
+        Update: {
+          account_no?: string | null
+          address?: string | null
+          bank?: string | null
+          branch?: string | null
+          contract?: string | null
+          created_at?: string
+          district?: string | null
+          farmer_name?: string
+          farmer_no?: string | null
+          id?: string
+          inspector_id?: string
+          province?: string | null
+          subdistrict?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farmers_inspector_id_fkey"
+            columns: ["inspector_id"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspections: {
+        Row: {
+          created_at: string
+          details: string
+          id: string
+          plantation_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          details: string
+          id?: string
+          plantation_id: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          details?: string
+          id?: string
+          plantation_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspections_plantation_id_fkey"
+            columns: ["plantation_id"]
+            isOneToOne: false
+            referencedRelation: "plantations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspectors: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          phone: string | null
+          photo: string | null
+          position: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          photo?: string | null
+          position?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          photo?: string | null
+          position?: string | null
+        }
+        Relationships: []
+      }
+      plantations: {
+        Row: {
+          created_at: string
+          farmer_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          farmer_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          farmer_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plantations_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
