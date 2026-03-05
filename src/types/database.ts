@@ -1,9 +1,9 @@
 export interface Inspector {
   id: string;
-  name: string;
-  phone: string;
-  email: string;
-  position: string;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  position: string | null;
   photo: string | null;
   created_at: string;
 }
@@ -11,15 +11,15 @@ export interface Inspector {
 export interface Farmer {
   id: string;
   farmer_name: string;
-  farmer_no: string;
-  address: string;
-  province: string;
-  district: string;
-  subdistrict: string;
-  bank: string;
-  account_no: string;
-  branch: string;
-  contract: string;
+  farmer_no: string | null;
+  address: string | null;
+  province: string | null;
+  district: string | null;
+  subdistrict: string | null;
+  bank: string | null;
+  account_no: string | null;
+  branch: string | null;
+  contract: boolean | null;
   inspector_id: string;
   created_at: string;
 }

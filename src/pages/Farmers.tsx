@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Farmer, Inspector } from '@/types/database';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Plus, Search, MapPin, CreditCard, FileText } from 'lucide-react';
 
-const emptyFarmer = { farmer_name: '', farmer_no: '', address: '', province: '', district: '', subdistrict: '', bank: '', account_no: '', branch: '', contract: '' };
+const emptyFarmer = { farmer_name: '', farmer_no: '', address: '', province: '', district: '', subdistrict: '', bank: '', account_no: '', branch: '', contract: false };
 
 const Farmers = () => {
   const { inspectorId } = useParams<{ inspectorId: string }>();
@@ -30,8 +31,8 @@ const Farmers = () => {
       supabase.from('inspectors').select('*').eq('id', inspectorId).single(),
     ]);
     if (farmersRes.error) toast.error(farmersRes.error.message);
-    else setFarmers(farmersRes.data || []);
-    if (inspectorRes.data) setInspector(inspectorRes.data);
+    else setFarmers((farmersRes.data as unknown as Farmer[]) || []);
+    if (inspectorRes.data) setInspector(inspectorRes.data as unknown as Inspector);
     setLoading(false);
   };
 
@@ -63,14 +64,28 @@ const Farmers = () => {
   };
 
   const openEdit = (f: Farmer) => {
-    setForm({ farmer_name: f.farmer_name, farmer_no: f.farmer_no, address: f.address, province: f.province, district: f.district, subdistrict: f.subdistrict, bank: f.bank, account_no: f.account_no, branch: f.branch, contract: f.contract });
+    setForm({
+      farmer_name: f.farmer_name,
+      farmer_no: f.farmer_no || '',
+      address: f.address || '',
+      province: f.province || '',
+      district: f.district || '',
+      subdistrict: f.subdistrict || '',
+      bank: f.bank || '',
+      account_no: f.account_no || '',
+      branch: f.branch || '',
+      contract: f.contract || false,
+    });
     setEditId(f.id);
     setDialogOpen(true);
   };
 
   const openCreate = () => { setForm(emptyFarmer); setEditId(null); setDialogOpen(true); };
 
-  const filtered = farmers.filter(f => f.farmer_name.toLowerCase().includes(search.toLowerCase()) || f.farmer_no.toLowerCase().includes(search.toLowerCase()));
+  const filtered = farmers.filter(f =>
+    f.farmer_name.toLowerCase().includes(search.toLowerCase()) ||
+    (f.farmer_no || '').toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -101,7 +116,10 @@ const Farmers = () => {
                 <div><Label>Account No</Label><Input value={form.account_no} onChange={e => setForm({ ...form, account_no: e.target.value })} /></div>
                 <div><Label>Branch</Label><Input value={form.branch} onChange={e => setForm({ ...form, branch: e.target.value })} /></div>
               </div>
-              <div><Label>Contract</Label><Input value={form.contract} onChange={e => setForm({ ...form, contract: e.target.value })} /></div>
+              <div className="flex items-center gap-2">
+                <Label>Contract</Label>
+                <Switch checked={form.contract} onCheckedChange={val => setForm({ ...form, contract: val })} />
+              </div>
               <Button onClick={handleSave} className="w-full">{editId ? 'Update' : 'Create'}</Button>
             </div>
           </DialogContent>
@@ -128,7 +146,7 @@ const Farmers = () => {
               <CardContent className="space-y-2 text-sm">
                 {f.address && <p className="flex items-center gap-2 text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{f.address}</p>}
                 {f.bank && <p className="flex items-center gap-2 text-muted-foreground"><CreditCard className="h-3.5 w-3.5" />{f.bank} - {f.account_no}</p>}
-                {f.contract && <p className="flex items-center gap-2 text-muted-foreground"><FileText className="h-3.5 w-3.5" />{f.contract}</p>}
+                {f.contract && <p className="flex items-center gap-2 text-muted-foreground"><FileText className="h-3.5 w-3.5" />มีสัญญา</p>}
                 <div className="flex gap-2 pt-3 flex-wrap">
                   <Button size="sm" variant="outline" onClick={() => openEdit(f)}>Edit</Button>
                   <Button size="sm" variant="outline" onClick={() => navigate(`/farmers/${f.id}/plantations`)}>Plantations</Button>

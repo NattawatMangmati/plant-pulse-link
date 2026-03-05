@@ -20,7 +20,7 @@ export type Database = {
           address: string | null
           bank: string | null
           branch: string | null
-          contract: string | null
+          contract: boolean | null
           created_at: string
           district: string | null
           farmer_name: string
@@ -35,7 +35,7 @@ export type Database = {
           address?: string | null
           bank?: string | null
           branch?: string | null
-          contract?: string | null
+          contract?: boolean | null
           created_at?: string
           district?: string | null
           farmer_name: string
@@ -50,7 +50,7 @@ export type Database = {
           address?: string | null
           bank?: string | null
           branch?: string | null
-          contract?: string | null
+          contract?: boolean | null
           created_at?: string
           district?: string | null
           farmer_name?: string

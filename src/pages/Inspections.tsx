@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Inspection, InspectionType } from '@/types/database';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ const Inspections = () => {
     if (!plantationId || !type) return;
     const { data, error } = await supabase.from('inspections').select('*').eq('plantation_id', plantationId).eq('type', type).order('created_at', { ascending: false });
     if (error) toast.error(error.message);
-    else setInspections(data || []);
+    else setInspections((data as unknown as Inspection[]) || []);
     setLoading(false);
   };
 

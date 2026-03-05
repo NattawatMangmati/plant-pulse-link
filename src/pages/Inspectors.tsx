@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Inspector } from '@/types/database';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,7 @@ const Inspectors = () => {
   const fetchInspectors = async () => {
     const { data, error } = await supabase.from('inspectors').select('*').order('created_at', { ascending: false });
     if (error) toast.error(error.message);
-    else setInspectors(data || []);
+    else setInspectors((data as unknown as Inspector[]) || []);
     setLoading(false);
   };
 
@@ -55,7 +55,7 @@ const Inspectors = () => {
   };
 
   const openEdit = (ins: Inspector) => {
-    setForm({ name: ins.name, phone: ins.phone, email: ins.email, position: ins.position, photo: ins.photo || '' });
+    setForm({ name: ins.name || '', phone: ins.phone || '', email: ins.email || '', position: ins.position || '', photo: ins.photo || '' });
     setEditId(ins.id);
     setDialogOpen(true);
   };
@@ -66,7 +66,7 @@ const Inspectors = () => {
     setDialogOpen(true);
   };
 
-  const filtered = inspectors.filter(i => i.name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = inspectors.filter(i => (i.name || '').toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-6">
