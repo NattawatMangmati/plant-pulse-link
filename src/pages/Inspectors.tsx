@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Inspector } from '@/types/database';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { Plus, Search, User, Phone, Mail, Briefcase } from 'lucide-react';
+import { Plus, Search, User, Phone, Mail, Briefcase, Upload, X } from 'lucide-react';
 
 const emptyForm = { Name: '', 'Full name': '', phone: '', email: '', position: '', photo: '' };
 
@@ -19,6 +20,8 @@ const Inspectors = () => {
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const fetchInspectors = async () => {
@@ -29,6 +32,42 @@ const Inspectors = () => {
   };
 
   useEffect(() => { fetchInspectors(); }, []);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    setUploading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('Inspector photo')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast.error('Upload failed: ' + uploadError.message);
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('Inspector photo')
+      .getPublicUrl(fileName);
+
+    setForm(prev => ({ ...prev, photo: urlData.publicUrl }));
+    setUploading(false);
+    toast.success('Photo uploaded');
+  };
+
+  const removePhoto = () => {
+    setForm(prev => ({ ...prev, photo: '' }));
+  };
 
   const handleSave = async () => {
     if (!form['Full name'].trim()) { toast.error('Full name is required'); return; }
@@ -101,12 +140,47 @@ const Inspectors = () => {
           <DialogContent>
             <DialogHeader><DialogTitle>{editId ? 'Edit' : 'New'} Inspector</DialogTitle></DialogHeader>
             <div className="space-y-3">
+              {/* Photo Upload */}
+              <div className="space-y-2">
+                <Label>Photo</Label>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    {form.photo ? (
+                      <AvatarImage src={form.photo} alt="Inspector photo" />
+                    ) : null}
+                    <AvatarFallback><User className="h-6 w-6" /></AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoUpload}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={uploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      {uploading ? 'Uploading...' : form.photo ? 'Change Photo' : 'Upload Photo'}
+                    </Button>
+                    {form.photo && (
+                      <Button type="button" variant="ghost" size="sm" onClick={removePhoto} className="text-destructive">
+                        <X className="h-4 w-4 mr-2" /> Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div><Label>Full Name *</Label><Input value={form['Full name']} onChange={e => setForm({ ...form, 'Full name': e.target.value })} /></div>
               <div><Label>Name</Label><Input value={form.Name} onChange={e => setForm({ ...form, Name: e.target.value })} /></div>
               <div><Label>Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div>
               <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>Position</Label><Input value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} /></div>
-              <div><Label>Photo URL</Label><Input value={form.photo} onChange={e => setForm({ ...form, photo: e.target.value })} /></div>
               <Button onClick={handleSave} className="w-full">{editId ? 'Update' : 'Create'}</Button>
             </div>
           </DialogContent>
@@ -128,9 +202,12 @@ const Inspectors = () => {
             <Card key={ins.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                    <User className="h-4 w-4 text-primary" />
-                  </div>
+                  <Avatar className="h-9 w-9">
+                    {ins.photo ? <AvatarImage src={ins.photo} alt={ins['Full name'] || ''} /> : null}
+                    <AvatarFallback className="bg-primary/10">
+                      <User className="h-4 w-4 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
                    <div>
                      <div>{ins['Full name'] || ins.Name}</div>
                      {ins.Name && ins['Full name'] && <div className="text-sm font-normal text-muted-foreground">{ins.Name}</div>}
