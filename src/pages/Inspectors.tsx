@@ -10,13 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from 'sonner';
 import { Plus, Search, User, Phone, Mail, Briefcase } from 'lucide-react';
 
-const emptyInspector = { name: '', phone: '', email: '', position: '', photo: '' };
+const emptyForm = { Name: '', 'Full name': '', phone: '', email: '', position: '', photo: '' };
 
 const Inspectors = () => {
   const [inspectors, setInspectors] = useState<Inspector[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [form, setForm] = useState(emptyInspector);
+  const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
@@ -31,18 +31,27 @@ const Inspectors = () => {
   useEffect(() => { fetchInspectors(); }, []);
 
   const handleSave = async () => {
-    if (!form.name.trim()) { toast.error('Name is required'); return; }
+    if (!form.Name.trim()) { toast.error('Name is required'); return; }
+
+    const payload = {
+      Name: form.Name,
+      'Full name': form['Full name'],
+      phone: form.phone,
+      email: form.email,
+      position: form.position,
+      photo: form.photo,
+    };
 
     if (editId) {
-      const { error } = await supabase.from('inspectors').update(form).eq('id', editId);
+      const { error } = await supabase.from('inspectors').update(payload).eq('id', editId);
       if (error) toast.error(error.message);
       else { toast.success('Inspector updated'); setDialogOpen(false); }
     } else {
-      const { error } = await supabase.from('inspectors').insert([form]);
+      const { error } = await supabase.from('inspectors').insert([payload]);
       if (error) toast.error(error.message);
       else { toast.success('Inspector created'); setDialogOpen(false); }
     }
-    setForm(emptyInspector);
+    setForm(emptyForm);
     setEditId(null);
     fetchInspectors();
   };
@@ -55,18 +64,28 @@ const Inspectors = () => {
   };
 
   const openEdit = (ins: Inspector) => {
-    setForm({ name: ins.name || '', phone: ins.phone || '', email: ins.email || '', position: ins.position || '', photo: ins.photo || '' });
+    setForm({
+      Name: ins.Name || '',
+      'Full name': ins['Full name'] || '',
+      phone: ins.phone || '',
+      email: ins.email || '',
+      position: ins.position || '',
+      photo: ins.photo || '',
+    });
     setEditId(ins.id);
     setDialogOpen(true);
   };
 
   const openCreate = () => {
-    setForm(emptyInspector);
+    setForm(emptyForm);
     setEditId(null);
     setDialogOpen(true);
   };
 
-  const filtered = inspectors.filter(i => (i.name || '').toLowerCase().includes(search.toLowerCase()));
+  const filtered = inspectors.filter(i =>
+    (i.Name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (i['Full name'] || '').toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -82,7 +101,8 @@ const Inspectors = () => {
           <DialogContent>
             <DialogHeader><DialogTitle>{editId ? 'Edit' : 'New'} Inspector</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Name *</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+              <div><Label>Name *</Label><Input value={form.Name} onChange={e => setForm({ ...form, Name: e.target.value })} /></div>
+              <div><Label>Full Name</Label><Input value={form['Full name']} onChange={e => setForm({ ...form, 'Full name': e.target.value })} /></div>
               <div><Label>Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div>
               <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>Position</Label><Input value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} /></div>
@@ -111,7 +131,10 @@ const Inspectors = () => {
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
                     <User className="h-4 w-4 text-primary" />
                   </div>
-                  {ins.name}
+                  <div>
+                    <div>{ins.Name}</div>
+                    {ins['Full name'] && <div className="text-sm font-normal text-muted-foreground">{ins['Full name']}</div>}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
