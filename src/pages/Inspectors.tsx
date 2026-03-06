@@ -31,7 +31,7 @@ const Inspectors = () => {
   useEffect(() => { fetchInspectors(); }, []);
 
   const handleSave = async () => {
-    if (!form.Name.trim()) { toast.error('Name is required'); return; }
+    if (!form['Full name'].trim()) { toast.error('Full name is required'); return; }
 
     const payload = {
       Name: form.Name,
@@ -83,8 +83,8 @@ const Inspectors = () => {
   };
 
   const filtered = inspectors.filter(i =>
-    (i.Name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (i['Full name'] || '').toLowerCase().includes(search.toLowerCase())
+    (i['Full name'] || '').toLowerCase().includes(search.toLowerCase()) ||
+    (i.Name || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -101,8 +101,8 @@ const Inspectors = () => {
           <DialogContent>
             <DialogHeader><DialogTitle>{editId ? 'Edit' : 'New'} Inspector</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Name *</Label><Input value={form.Name} onChange={e => setForm({ ...form, Name: e.target.value })} /></div>
-              <div><Label>Full Name</Label><Input value={form['Full name']} onChange={e => setForm({ ...form, 'Full name': e.target.value })} /></div>
+              <div><Label>Full Name *</Label><Input value={form['Full name']} onChange={e => setForm({ ...form, 'Full name': e.target.value })} /></div>
+              <div><Label>Name</Label><Input value={form.Name} onChange={e => setForm({ ...form, Name: e.target.value })} /></div>
               <div><Label>Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div>
               <div><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>Position</Label><Input value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} /></div>
@@ -131,10 +131,10 @@ const Inspectors = () => {
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
                     <User className="h-4 w-4 text-primary" />
                   </div>
-                  <div>
-                    <div>{ins.Name}</div>
-                    {ins['Full name'] && <div className="text-sm font-normal text-muted-foreground">{ins['Full name']}</div>}
-                  </div>
+                   <div>
+                     <div>{ins['Full name'] || ins.Name}</div>
+                     {ins.Name && ins['Full name'] && <div className="text-sm font-normal text-muted-foreground">{ins.Name}</div>}
+                   </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
