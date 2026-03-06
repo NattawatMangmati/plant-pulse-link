@@ -1,6 +1,7 @@
 export interface Inspector {
   id: string;
-  name: string | null;
+  Name: string | null;
+  "Full name": string | null;
   phone: string | null;
   email: string | null;
   position: string | null;
