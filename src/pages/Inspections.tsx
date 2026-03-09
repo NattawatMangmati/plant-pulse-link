@@ -225,7 +225,7 @@ const Inspections = () => {
         m_y_force: plantationData.force_month || '',
         Area: plantationData.area != null ? String(plantationData.area) : '',
         force_plant: plantationData.force_plant != null ? String(plantationData.force_plant) : '',
-        force_date: plantationData.first_force_date ? parseISO(plantationData.first_force_date) : undefined,
+        force_date: plantationData["60_days_after_force"] ? parseISO(plantationData["60_days_after_force"]) : undefined,
       }));
     }
   }, [plantationData, dialogOpen, editId, isAfter60]);
