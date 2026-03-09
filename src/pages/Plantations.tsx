@@ -21,6 +21,21 @@ const inspectionTypes: { type: InspectionType; label: string; icon: typeof Clipb
 ];
 
 const plotTypeOptions = ['ต้นใหม่', 'เลี้ยงตอ'];
+const interCropOptions = ['แซมยางพารา', 'แซมปาล์ม', 'แซมทุเรียน', 'แซมมะพร้าว', 'พื้นที่เปล่า'];
+const plantSpacingOptions = ['ร่องคู่ 2 แถว 35 x 40 (ปูพื้น)', 'ร่องคู่ 4 แถว 35 x 35 (ยกร่อง)', 'ร่องคู่ 4 แถว 30 x 35 (ยกร่อง)'];
+const plantPerRaiOptions = Array.from({ length: 17 }, (_, i) => String(4000 + i * 500));
+
+const generateForceMonthOptions = () => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const options: string[] = [];
+  for (let year = 2025; year <= 2028; year++) {
+    for (const month of months) {
+      options.push(`${month}-${year}`);
+    }
+  }
+  return options;
+};
+const forceMonthOptions = generateForceMonthOptions();
 
 const generateMonthYearOptions = () => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -43,6 +58,11 @@ interface PlantationForm {
   subdistrict: string;
   plots_month: string;
   plots_type: string;
+  force_month: string;
+  inter_crop: string;
+  plant_spacing: string;
+  juk_noo: string;
+  plant_per_rai: string;
 }
 
 const emptyForm: PlantationForm = {
@@ -53,6 +73,11 @@ const emptyForm: PlantationForm = {
   subdistrict: '',
   plots_month: '',
   plots_type: '',
+  force_month: '',
+  inter_crop: '',
+  plant_spacing: '',
+  juk_noo: '',
+  plant_per_rai: '',
 };
 
 const Plantations = () => {
@@ -106,6 +131,11 @@ const Plantations = () => {
       subdistrict: form.subdistrict || null,
       "plot's_month": form.plots_month || null,
       "plot's_type": form.plots_type || null,
+      force_month: form.force_month || null,
+      inter_crop: form.inter_crop || null,
+      plant_spacing: form.plant_spacing || null,
+      "จุก/หน่อ": form.juk_noo || null,
+      plant_per_rai: form.plant_per_rai || null,
     };
 
     if (editId) {
@@ -138,6 +168,11 @@ const Plantations = () => {
       subdistrict: p.subdistrict || '',
       plots_month: p["plot's_month"] || '',
       plots_type: p["plot's_type"] || '',
+      force_month: p.force_month || '',
+      inter_crop: p.inter_crop || '',
+      plant_spacing: p.plant_spacing || '',
+      juk_noo: p["จุก/หน่อ"] || '',
+      plant_per_rai: p.plant_per_rai || '',
     });
     setEditId(p.id);
     setDialogOpen(true);
@@ -250,6 +285,64 @@ const Plantations = () => {
                   <SelectContent>
                     {plotTypeOptions.map(t => (
                       <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 8. Force Month */}
+              <div className="space-y-1">
+                <Label>Force Month</Label>
+                <Select value={form.force_month} onValueChange={v => updateField('force_month', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกเดือน-ปี" /></SelectTrigger>
+                  <SelectContent>
+                    {forceMonthOptions.map(m => (
+                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 9. Inter Crop */}
+              <div className="space-y-1">
+                <Label>Inter Crop</Label>
+                <Select value={form.inter_crop} onValueChange={v => updateField('inter_crop', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกพืชแซม" /></SelectTrigger>
+                  <SelectContent>
+                    {interCropOptions.map(c => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 10. Plant Spacing */}
+              <div className="space-y-1">
+                <Label>Plant Spacing</Label>
+                <Select value={form.plant_spacing} onValueChange={v => updateField('plant_spacing', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกระยะปลูก" /></SelectTrigger>
+                  <SelectContent>
+                    {plantSpacingOptions.map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 11. จุก/หน่อ */}
+              <div className="space-y-1">
+                <Label>จุก/หน่อ</Label>
+                <Input value={form.juk_noo} onChange={e => updateField('juk_noo', e.target.value)} placeholder="ระบุจุก/หน่อ" />
+              </div>
+
+              {/* 12. Plant per Rai */}
+              <div className="space-y-1">
+                <Label>Plant per Rai</Label>
+                <Select value={form.plant_per_rai} onValueChange={v => updateField('plant_per_rai', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกจำนวนต้น/ไร่" /></SelectTrigger>
+                  <SelectContent>
+                    {plantPerRaiOptions.map(n => (
+                      <SelectItem key={n} value={n}>{n}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

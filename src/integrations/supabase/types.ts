@@ -367,6 +367,9 @@ export type Database = {
           id: string
           inspectorid: string | null
           inter_crop: string | null
+          lat: number | null
+          long: number | null
+          photo: string | null
           plant_per_rai: string | null
           plant_spacing: string | null
           plantation_name: string
@@ -394,6 +397,9 @@ export type Database = {
           id?: string
           inspectorid?: string | null
           inter_crop?: string | null
+          lat?: number | null
+          long?: number | null
+          photo?: string | null
           plant_per_rai?: string | null
           plant_spacing?: string | null
           plantation_name: string
@@ -421,6 +427,9 @@ export type Database = {
           id?: string
           inspectorid?: string | null
           inter_crop?: string | null
+          lat?: number | null
+          long?: number | null
+          photo?: string | null
           plant_per_rai?: string | null
           plant_spacing?: string | null
           plantation_name?: string
