@@ -72,7 +72,7 @@ const Plantations = () => {
   const openEdit = (p: Plantation) => { setForm({ name: p.plantation_name }); setEditId(p.id); setDialogOpen(true); };
   const openCreate = () => { setForm({ name: '' }); setEditId(null); setDialogOpen(true); };
 
-  const filtered = plantations.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = plantations.filter(p => (p.plantation_name || '').toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-6">
