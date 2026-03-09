@@ -58,6 +58,11 @@ interface PlantationForm {
   subdistrict: string;
   plots_month: string;
   plots_type: string;
+  force_month: string;
+  inter_crop: string;
+  plant_spacing: string;
+  juk_noo: string;
+  plant_per_rai: string;
 }
 
 const emptyForm: PlantationForm = {
@@ -68,6 +73,11 @@ const emptyForm: PlantationForm = {
   subdistrict: '',
   plots_month: '',
   plots_type: '',
+  force_month: '',
+  inter_crop: '',
+  plant_spacing: '',
+  juk_noo: '',
+  plant_per_rai: '',
 };
 
 const Plantations = () => {
