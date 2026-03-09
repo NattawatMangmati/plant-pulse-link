@@ -134,6 +134,7 @@ export type Database = {
           productive_plant: number | null
           total_all: number | null
           total_fruiting: number | null
+          "total_non-fruiting": number | null
           total_row1: number | null
           total_row2: number | null
           total_row3: number | null
@@ -165,6 +166,7 @@ export type Database = {
           productive_plant?: number | null
           total_all?: number | null
           total_fruiting?: number | null
+          "total_non-fruiting"?: number | null
           total_row1?: number | null
           total_row2?: number | null
           total_row3?: number | null
@@ -196,6 +198,7 @@ export type Database = {
           productive_plant?: number | null
           total_all?: number | null
           total_fruiting?: number | null
+          "total_non-fruiting"?: number | null
           total_row1?: number | null
           total_row2?: number | null
           total_row3?: number | null

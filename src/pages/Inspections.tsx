@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'sonner';
-import { Plus, FileText, Trash2, Edit, CalendarIcon } from 'lucide-react';
+import { Plus, FileText, Trash2, Edit, CalendarIcon, Upload, X } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -48,21 +48,6 @@ interface InspectionForm {
   inter_crop: string;
 }
 
-interface After60Form {
-  'M-Y plot': string;
-  m_y_force: string;
-  Area: string;
-  force_plant: string;
-  force_date: Date | undefined;
-  inspection_date: Date | undefined;
-  fruiting_row1: string;
-  'Non-fruiting_row1': string;
-  fruiting_row2: string;
-  non_fruiting_row2: string;
-  fruiting_row3: string;
-  non_fruiting_row3: string;
-}
-
 const emptyForm: InspectionForm = {
   รอบติดตาม: '',
   date: undefined,
@@ -78,6 +63,23 @@ const emptyForm: InspectionForm = {
   inter_crop: '',
 };
 
+interface After60Form {
+  'M-Y plot': string;
+  m_y_force: string;
+  Area: string;
+  force_plant: string;
+  force_date: Date | undefined;
+  inspection_date: Date | undefined;
+  fruiting_row1: string;
+  'Non-fruiting_row1': string;
+  fruiting_row2: string;
+  non_fruiting_row2: string;
+  fruiting_row3: string;
+  non_fruiting_row3: string;
+  est_harvest_date: Date | undefined;
+  plant_photo: string;
+}
+
 const emptyAfter60Form: After60Form = {
   'M-Y plot': '',
   m_y_force: '',
@@ -91,6 +93,8 @@ const emptyAfter60Form: After60Form = {
   non_fruiting_row2: '',
   fruiting_row3: '',
   non_fruiting_row3: '',
+  est_harvest_date: undefined,
+  plant_photo: '',
 };
 
 interface GenericRecord {
@@ -116,6 +120,7 @@ const Inspections = () => {
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [uploading60Photo, setUploading60Photo] = useState(false);
 
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
@@ -151,7 +156,51 @@ const Inspections = () => {
     return f + nf;
   }, [after60Form.fruiting_row3, after60Form.non_fruiting_row3]);
 
-  // Fetch plantation data for auto-fill
+  // Fields 16-21, 23: auto-calculated
+  const totalFruiting = useMemo(() => {
+    return (parseFloat(after60Form.fruiting_row1) || 0) + (parseFloat(after60Form.fruiting_row2) || 0) + (parseFloat(after60Form.fruiting_row3) || 0);
+  }, [after60Form.fruiting_row1, after60Form.fruiting_row2, after60Form.fruiting_row3]);
+
+  const totalNonFruiting = useMemo(() => {
+    return (parseFloat(after60Form['Non-fruiting_row1']) || 0) + (parseFloat(after60Form.non_fruiting_row2) || 0) + (parseFloat(after60Form.non_fruiting_row3) || 0);
+  }, [after60Form['Non-fruiting_row1'], after60Form.non_fruiting_row2, after60Form.non_fruiting_row3]);
+
+  const totalAll = totalRow1 + totalRow2 + totalRow3;
+
+  const fruitingPerc = useMemo(() => {
+    if (totalAll === 0) return 0;
+    return Math.round((totalFruiting / totalAll) * 100 * 100) / 100;
+  }, [totalFruiting, totalAll]);
+
+  const nonFruitingPerc = useMemo(() => {
+    if (totalAll === 0) return 0;
+    return Math.round((totalNonFruiting / totalAll) * 100 * 100) / 100;
+  }, [totalNonFruiting, totalAll]);
+
+  const productivePlant = useMemo(() => {
+    const fp = parseFloat(after60Form.force_plant) || 0;
+    return Math.round((fruitingPerc * fp) / 100);
+  }, [fruitingPerc, after60Form.force_plant]);
+
+  const estProducts = useMemo(() => {
+    const fp = parseFloat(after60Form.force_plant) || 0;
+    return Math.round((totalFruiting * fp) * 100 * 100) / 100;
+  }, [totalFruiting, after60Form.force_plant]);
+
+  // Photo upload for 60days
+  const handle60PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading60Photo(true);
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${plantationId}/${Date.now()}.${fileExt}`;
+    const { error } = await supabase.storage.from('60D photo').upload(filePath, file);
+    if (error) { toast.error(error.message); setUploading60Photo(false); return; }
+    const { data: urlData } = supabase.storage.from('60D photo').getPublicUrl(filePath);
+    updateAfter60Field('plant_photo', urlData.publicUrl);
+    setUploading60Photo(false);
+  };
+
   useEffect(() => {
     const fetchPlantation = async () => {
       if (!plantationId) return;
@@ -253,6 +302,15 @@ const Inspections = () => {
         fruiting_row3: after60Form.fruiting_row3 ? parseFloat(after60Form.fruiting_row3) : null,
         'non-fruiting_row3': after60Form.non_fruiting_row3 ? parseFloat(after60Form.non_fruiting_row3) : null,
         total_row3: totalRow3 || null,
+        total_fruiting: totalFruiting || null,
+        'total_non-fruiting': totalNonFruiting || null,
+        total_all: totalAll || null,
+        fruiting_perc: fruitingPerc || null,
+        'non-fruiting_perc': nonFruitingPerc || null,
+        productive_plant: productivePlant || null,
+        est_harvest_date: after60Form.est_harvest_date ? format(after60Form.est_harvest_date, 'yyyy-MM-dd') : null,
+        est_products: estProducts || null,
+        plant_photo: after60Form.plant_photo || null,
       };
 
       if (editId) {
@@ -319,6 +377,8 @@ const Inspections = () => {
         non_fruiting_row2: rec['non-fruiting_row2'] != null ? String(rec['non-fruiting_row2']) : '',
         fruiting_row3: rec.fruiting_row3 != null ? String(rec.fruiting_row3) : '',
         non_fruiting_row3: rec['non-fruiting_row3'] != null ? String(rec['non-fruiting_row3']) : '',
+        est_harvest_date: rec.est_harvest_date ? parseISO(rec.est_harvest_date as string) : undefined,
+        plant_photo: (rec.plant_photo as string) || '',
       });
     }
     setEditId(rec.id);
@@ -531,6 +591,69 @@ const Inspections = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* 16-24: Summary fields */}
+                  <div className="border-t pt-3 mt-3 space-y-3">
+                    <div>
+                      <Label>ผลรวมต้นที่ออกผล (total_fruiting)</Label>
+                      <Input value={totalFruiting} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>ผลรวมต้นที่ไม่ออกผล (total_non-fruiting)</Label>
+                      <Input value={totalNonFruiting} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>ผลรวมทั้งหมด (total_all)</Label>
+                      <Input value={totalAll} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>เปอร์เซนต์ต้นที่ออกผล (%)</Label>
+                      <Input value={fruitingPerc} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>เปอร์เซนต์ต้นที่ไม่ออกผล (%)</Label>
+                      <Input value={nonFruitingPerc} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>จำนวนต้นที่ให้ผลผลิต (productive_plant)</Label>
+                      <Input value={productivePlant} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>คาดหมายวันเก็บผลผลิต (est_harvest_date)</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !after60Form.est_harvest_date && "text-muted-foreground")}>
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {after60Form.est_harvest_date ? format(after60Form.est_harvest_date, 'PPP') : 'Pick a date'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar mode="single" selected={after60Form.est_harvest_date} onSelect={d => updateAfter60Field('est_harvest_date', d)} initialFocus className="p-3 pointer-events-auto" />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div>
+                      <Label>คาดหมายผลผลิตเบื้องต้น (est_products)</Label>
+                      <Input value={estProducts} readOnly className="bg-muted" />
+                    </div>
+                    <div>
+                      <Label>Photo</Label>
+                      {after60Form.plant_photo && (
+                        <div className="relative w-full h-48 rounded-md overflow-hidden border border-border mb-2">
+                          <img src={after60Form.plant_photo} alt="Plant" className="w-full h-full object-cover" />
+                          <Button size="icon" variant="destructive" className="absolute top-2 right-2 h-7 w-7" onClick={() => updateAfter60Field('plant_photo', '')}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <Button variant="outline" size="sm" asChild disabled={uploading60Photo}>
+                          <span><Upload className="h-4 w-4 mr-1" />{uploading60Photo ? 'Uploading...' : 'Upload Photo'}</span>
+                        </Button>
+                        <input type="file" accept="image/*" className="hidden" onChange={handle60PhotoUpload} disabled={uploading60Photo} />
+                      </label>
+                    </div>
+                  </div>
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">A new record will be created for this plantation.</p>
@@ -586,9 +709,14 @@ const Inspections = () => {
                 <CardContent className="text-sm space-y-1">
                   {rec['M-Y plot'] && <p><span className="text-muted-foreground">Plot's month:</span> {rec['M-Y plot'] as string}</p>}
                   {rec.Area != null && <p><span className="text-muted-foreground">Area:</span> {String(rec.Area)}</p>}
-                  {rec.total_row1 != null && <p><span className="text-muted-foreground">ผลรวมแถว 1:</span> {String(rec.total_row1)}</p>}
-                  {rec.total_row2 != null && <p><span className="text-muted-foreground">ผลรวมแถว 2:</span> {String(rec.total_row2)}</p>}
-                  {rec.total_row3 != null && <p><span className="text-muted-foreground">ผลรวมแถว 3:</span> {String(rec.total_row3)}</p>}
+                  {rec.total_fruiting != null && <p><span className="text-muted-foreground">ผลรวมต้นที่ออก:</span> {String(rec.total_fruiting)}</p>}
+                  {rec['total_non-fruiting'] != null && <p><span className="text-muted-foreground">ผลรวมต้นที่ไม่ออก:</span> {String(rec['total_non-fruiting'])}</p>}
+                  {rec.total_all != null && <p><span className="text-muted-foreground">ผลรวมทั้งหมด:</span> {String(rec.total_all)}</p>}
+                  {rec.fruiting_perc != null && <p><span className="text-muted-foreground">ออกผล:</span> {String(rec.fruiting_perc)}%</p>}
+                  {rec.productive_plant != null && <p><span className="text-muted-foreground">ต้นที่ให้ผลผลิต:</span> {String(rec.productive_plant)}</p>}
+                  {rec.plant_photo && (
+                    <img src={rec.plant_photo as string} alt="Plant" className="w-full h-32 object-cover rounded-md mt-2" />
+                  )}
                 </CardContent>
               )}
             </Card>
