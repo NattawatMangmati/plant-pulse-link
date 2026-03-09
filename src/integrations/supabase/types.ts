@@ -353,11 +353,17 @@ export type Database = {
       }
       plantations: {
         Row: {
+          "120_days_after_force": string | null
+          "140_days_after_force": string | null
+          "60_days_after_force": string | null
           address: string | null
+          area: number | null
           created_at: string
           district: string | null
           farmer_id: string
+          first_force_date: string | null
           force_month: string | null
+          force_plant: number | null
           id: string
           inspectorid: string | null
           inter_crop: string | null
@@ -367,14 +373,24 @@ export type Database = {
           "plot's_month": string | null
           "plot's_type": string | null
           province: string | null
+          second_force_date: string | null
           subdistrict: string | null
+          total_plant: number | null
+          total_plant_register: number | null
+          "จุก/หน่อ": string | null
         }
         Insert: {
+          "120_days_after_force"?: string | null
+          "140_days_after_force"?: string | null
+          "60_days_after_force"?: string | null
           address?: string | null
+          area?: number | null
           created_at?: string
           district?: string | null
           farmer_id: string
+          first_force_date?: string | null
           force_month?: string | null
+          force_plant?: number | null
           id?: string
           inspectorid?: string | null
           inter_crop?: string | null
@@ -384,14 +400,24 @@ export type Database = {
           "plot's_month"?: string | null
           "plot's_type"?: string | null
           province?: string | null
+          second_force_date?: string | null
           subdistrict?: string | null
+          total_plant?: number | null
+          total_plant_register?: number | null
+          "จุก/หน่อ"?: string | null
         }
         Update: {
+          "120_days_after_force"?: string | null
+          "140_days_after_force"?: string | null
+          "60_days_after_force"?: string | null
           address?: string | null
+          area?: number | null
           created_at?: string
           district?: string | null
           farmer_id?: string
+          first_force_date?: string | null
           force_month?: string | null
+          force_plant?: number | null
           id?: string
           inspectorid?: string | null
           inter_crop?: string | null
@@ -401,7 +427,11 @@ export type Database = {
           "plot's_month"?: string | null
           "plot's_type"?: string | null
           province?: string | null
+          second_force_date?: string | null
           subdistrict?: string | null
+          total_plant?: number | null
+          total_plant_register?: number | null
+          "จุก/หน่อ"?: string | null
         }
         Relationships: [
           {
