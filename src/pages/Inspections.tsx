@@ -377,8 +377,9 @@ const Inspections = () => {
         non_fruiting_row2: rec['non-fruiting_row2'] != null ? String(rec['non-fruiting_row2']) : '',
         fruiting_row3: rec.fruiting_row3 != null ? String(rec.fruiting_row3) : '',
         non_fruiting_row3: rec['non-fruiting_row3'] != null ? String(rec['non-fruiting_row3']) : '',
+        est_harvest_date: rec.est_harvest_date ? parseISO(rec.est_harvest_date as string) : undefined,
+        plant_photo: (rec.plant_photo as string) || '',
       });
-    }
     setEditId(rec.id);
     setDialogOpen(true);
   };
