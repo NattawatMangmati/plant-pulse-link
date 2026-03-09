@@ -113,7 +113,7 @@ const Plantations = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Sprout className="h-5 w-5 text-primary" />
-                  {p.name}
+                  {p.plantation_name}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
