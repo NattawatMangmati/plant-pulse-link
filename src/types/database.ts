@@ -22,6 +22,9 @@ export interface Farmer {
   branch: string | null;
   contract: boolean | null;
   inspector_id: string;
+  profile_photo: string | null;
+  id_card_photo: string | null;
+  bookbank_photo: string | null;
   created_at: string;
 }
 
