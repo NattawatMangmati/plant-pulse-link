@@ -164,6 +164,7 @@ const Inspections = () => {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<InspectionForm>(emptyForm);
   const [after60Form, setAfter60Form] = useState<After60Form>(emptyAfter60Form);
+  const [harvestForm, setHarvestForm] = useState<HarvestPlanForm>(emptyHarvestPlanForm);
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
