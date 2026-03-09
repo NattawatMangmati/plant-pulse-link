@@ -290,6 +290,64 @@ const Plantations = () => {
                 </Select>
               </div>
 
+              {/* 8. Force Month */}
+              <div className="space-y-1">
+                <Label>Force Month</Label>
+                <Select value={form.force_month} onValueChange={v => updateField('force_month', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกเดือน-ปี" /></SelectTrigger>
+                  <SelectContent>
+                    {forceMonthOptions.map(m => (
+                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 9. Inter Crop */}
+              <div className="space-y-1">
+                <Label>Inter Crop</Label>
+                <Select value={form.inter_crop} onValueChange={v => updateField('inter_crop', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกพืชแซม" /></SelectTrigger>
+                  <SelectContent>
+                    {interCropOptions.map(c => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 10. Plant Spacing */}
+              <div className="space-y-1">
+                <Label>Plant Spacing</Label>
+                <Select value={form.plant_spacing} onValueChange={v => updateField('plant_spacing', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกระยะปลูก" /></SelectTrigger>
+                  <SelectContent>
+                    {plantSpacingOptions.map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 11. จุก/หน่อ */}
+              <div className="space-y-1">
+                <Label>จุก/หน่อ</Label>
+                <Input value={form.juk_noo} onChange={e => updateField('juk_noo', e.target.value)} placeholder="ระบุจุก/หน่อ" />
+              </div>
+
+              {/* 12. Plant per Rai */}
+              <div className="space-y-1">
+                <Label>Plant per Rai</Label>
+                <Select value={form.plant_per_rai} onValueChange={v => updateField('plant_per_rai', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกจำนวนต้น/ไร่" /></SelectTrigger>
+                  <SelectContent>
+                    {plantPerRaiOptions.map(n => (
+                      <SelectItem key={n} value={n}>{n}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <Button onClick={handleSave} className="w-full">{editId ? 'Update' : 'Create'}</Button>
             </div>
           </DialogContent>
