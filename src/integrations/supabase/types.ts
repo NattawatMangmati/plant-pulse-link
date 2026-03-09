@@ -16,24 +16,45 @@ export type Database = {
     Tables: {
       "120days": {
         Row: {
+          area: number | null
           created_at: string
           farmerid: string | null
-          id: number
+          force_date: string | null
+          force_plant: number | null
+          id: string
+          inspection_date: string | null
           inspectorid: string | null
+          m_y_force: string | null
+          m_y_plot: string | null
+          nouse: number
           platationid: string | null
         }
         Insert: {
+          area?: number | null
           created_at?: string
           farmerid?: string | null
-          id?: number
+          force_date?: string | null
+          force_plant?: number | null
+          id: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          m_y_force?: string | null
+          m_y_plot?: string | null
+          nouse?: number
           platationid?: string | null
         }
         Update: {
+          area?: number | null
           created_at?: string
           farmerid?: string | null
-          id?: number
+          force_date?: string | null
+          force_plant?: number | null
+          id?: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          m_y_force?: string | null
+          m_y_plot?: string | null
+          nouse?: number
           platationid?: string | null
         }
         Relationships: [
