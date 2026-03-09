@@ -108,28 +108,97 @@ export type Database = {
       }
       "60days": {
         Row: {
+          Area: number | null
           created_at: string
+          est_harvest_date: string | null
+          est_products: number | null
           farmerid: string | null
-          id: number
+          force_date: string | null
+          force_plant: number | null
+          fruiting_perc: number | null
+          fruiting_row1: number | null
+          fruiting_row2: number | null
+          fruiting_row3: number | null
+          id: string
+          inspection_date: string | null
           inspectorid: string | null
+          m_y_force: string | null
           "M-Y plot": string | null
+          "no-use": number
+          "non-fruiting_perc": number | null
+          "Non-fruiting_row1": number | null
+          "non-fruiting_row2": number | null
+          "non-fruiting_row3": number | null
+          plant_photo: string | null
           plantationid: string | null
+          productive_plant: number | null
+          total_all: number | null
+          total_fruiting: number | null
+          total_row1: number | null
+          total_row2: number | null
+          total_row3: number | null
         }
         Insert: {
+          Area?: number | null
           created_at?: string
+          est_harvest_date?: string | null
+          est_products?: number | null
           farmerid?: string | null
-          id?: number
+          force_date?: string | null
+          force_plant?: number | null
+          fruiting_perc?: number | null
+          fruiting_row1?: number | null
+          fruiting_row2?: number | null
+          fruiting_row3?: number | null
+          id: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          m_y_force?: string | null
           "M-Y plot"?: string | null
+          "no-use"?: number
+          "non-fruiting_perc"?: number | null
+          "Non-fruiting_row1"?: number | null
+          "non-fruiting_row2"?: number | null
+          "non-fruiting_row3"?: number | null
+          plant_photo?: string | null
           plantationid?: string | null
+          productive_plant?: number | null
+          total_all?: number | null
+          total_fruiting?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
         }
         Update: {
+          Area?: number | null
           created_at?: string
+          est_harvest_date?: string | null
+          est_products?: number | null
           farmerid?: string | null
-          id?: number
+          force_date?: string | null
+          force_plant?: number | null
+          fruiting_perc?: number | null
+          fruiting_row1?: number | null
+          fruiting_row2?: number | null
+          fruiting_row3?: number | null
+          id?: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          m_y_force?: string | null
           "M-Y plot"?: string | null
+          "no-use"?: number
+          "non-fruiting_perc"?: number | null
+          "Non-fruiting_row1"?: number | null
+          "non-fruiting_row2"?: number | null
+          "non-fruiting_row3"?: number | null
+          plant_photo?: string | null
           plantationid?: string | null
+          productive_plant?: number | null
+          total_all?: number | null
+          total_fruiting?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
         }
         Relationships: [
           {
