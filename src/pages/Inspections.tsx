@@ -48,10 +48,10 @@ const Inspections = () => {
 
   const fetchData = async () => {
     if (!plantationId || !type || !config) return;
-    const { data, error } = await supabase
+    const { data, error } = await (supabase
       .from(config.table as any)
       .select('*')
-      .eq(config.plantationCol, plantationId)
+      .eq(config.plantationCol, plantationId) as any)
       .order('created_at', { ascending: false });
     if (error) toast.error(error.message);
     else setRecords((data as GenericRecord[]) || []);
