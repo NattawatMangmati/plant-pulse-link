@@ -108,7 +108,7 @@ interface PlantationData {
   force_month: string | null;
   area: number | null;
   force_plant: number | null;
-  first_force_date: string | null;
+  "60_days_after_force": string | null;
 }
 
 const Inspections = () => {
