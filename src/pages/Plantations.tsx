@@ -69,7 +69,7 @@ const Plantations = () => {
     else { toast.success('Deleted'); fetchData(); }
   };
 
-  const openEdit = (p: Plantation) => { setForm({ name: p.name }); setEditId(p.id); setDialogOpen(true); };
+  const openEdit = (p: Plantation) => { setForm({ name: p.plantation_name }); setEditId(p.id); setDialogOpen(true); };
   const openCreate = () => { setForm({ name: '' }); setEditId(null); setDialogOpen(true); };
 
   const filtered = plantations.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
