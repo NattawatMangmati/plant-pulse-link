@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Plantation, Farmer, InspectionType } from '@/types/database';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Plus, Search, ClipboardCheck, Clock, CalendarCheck, Sprout } from 'lucide-react';
+import { thailandLocations } from '@/data/thailand-locations';
 
 const inspectionTypes: { type: InspectionType; label: string; icon: typeof ClipboardCheck }[] = [
   { type: 'inspection', label: 'Inspection', icon: ClipboardCheck },
@@ -18,16 +20,66 @@ const inspectionTypes: { type: InspectionType; label: string; icon: typeof Clipb
   { type: 'harvest_plan', label: 'Harvest Plan', icon: CalendarCheck },
 ];
 
+const plotTypeOptions = ['ต้นใหม่', 'เลี้ยงตอ'];
+
+const generateMonthYearOptions = () => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const options: string[] = [];
+  for (let year = 2024; year <= 2027; year++) {
+    for (const month of months) {
+      options.push(`${month}-${year}`);
+    }
+  }
+  return options;
+};
+
+const monthYearOptions = generateMonthYearOptions();
+
+interface PlantationForm {
+  plantation_name: string;
+  address: string;
+  province: string;
+  district: string;
+  subdistrict: string;
+  plots_month: string;
+  plots_type: string;
+}
+
+const emptyForm: PlantationForm = {
+  plantation_name: '',
+  address: '',
+  province: '',
+  district: '',
+  subdistrict: '',
+  plots_month: '',
+  plots_type: '',
+};
+
 const Plantations = () => {
   const { farmerId } = useParams<{ farmerId: string }>();
   const [plantations, setPlantations] = useState<Plantation[]>([]);
   const [farmer, setFarmer] = useState<Farmer | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [form, setForm] = useState({ name: '' });
+  const [form, setForm] = useState<PlantationForm>({ ...emptyForm });
   const [editId, setEditId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  const provinces = useMemo(() => thailandLocations.map(l => l.province), []);
+
+  const districts = useMemo(() => {
+    if (!form.province) return [];
+    const loc = thailandLocations.find(l => l.province === form.province);
+    return loc ? loc.districts.map(d => d.name) : [];
+  }, [form.province]);
+
+  const subdistricts = useMemo(() => {
+    if (!form.province || !form.district) return [];
+    const loc = thailandLocations.find(l => l.province === form.province);
+    const dist = loc?.districts.find(d => d.name === form.district);
+    return dist ? dist.subdistricts : [];
+  }, [form.province, form.district]);
 
   const fetchData = async () => {
     if (!farmerId) return;
@@ -44,19 +96,28 @@ const Plantations = () => {
   useEffect(() => { fetchData(); }, [farmerId]);
 
   const handleSave = async () => {
-    if (!form.name.trim()) { toast.error('Name is required'); return; }
-    const payload = { ...form, farmer_id: farmerId! };
+    if (!form.plantation_name.trim()) { toast.error('Plantation Name is required'); return; }
+    
+    const payload: Record<string, unknown> = {
+      plantation_name: form.plantation_name,
+      address: form.address || null,
+      province: form.province || null,
+      district: form.district || null,
+      subdistrict: form.subdistrict || null,
+      "plot's_month": form.plots_month || null,
+      "plot's_type": form.plots_type || null,
+    };
 
     if (editId) {
-      const { error } = await supabase.from('plantations').update({ plantation_name: form.name }).eq('id', editId);
+      const { error } = await supabase.from('plantations').update(payload as any).eq('id', editId);
       if (error) toast.error(error.message);
       else { toast.success('Updated'); setDialogOpen(false); }
     } else {
-      const { error } = await supabase.from('plantations').insert([{ plantation_name: form.name, farmer_id: farmerId! }]);
+      const { error } = await supabase.from('plantations').insert([{ ...payload, farmer_id: farmerId! } as any]);
       if (error) toast.error(error.message);
       else { toast.success('Created'); setDialogOpen(false); }
     }
-    setForm({ name: '' });
+    setForm({ ...emptyForm });
     setEditId(null);
     fetchData();
   };
@@ -68,8 +129,36 @@ const Plantations = () => {
     else { toast.success('Deleted'); fetchData(); }
   };
 
-  const openEdit = (p: Plantation) => { setForm({ name: p.plantation_name }); setEditId(p.id); setDialogOpen(true); };
-  const openCreate = () => { setForm({ name: '' }); setEditId(null); setDialogOpen(true); };
+  const openEdit = (p: Plantation) => {
+    setForm({
+      plantation_name: p.plantation_name || '',
+      address: p.address || '',
+      province: p.province || '',
+      district: p.district || '',
+      subdistrict: p.subdistrict || '',
+      plots_month: p["plot's_month"] || '',
+      plots_type: p["plot's_type"] || '',
+    });
+    setEditId(p.id);
+    setDialogOpen(true);
+  };
+
+  const openCreate = () => { setForm({ ...emptyForm }); setEditId(null); setDialogOpen(true); };
+
+  const updateField = (field: keyof PlantationForm, value: string) => {
+    setForm(prev => {
+      const next = { ...prev, [field]: value };
+      // Reset cascading fields
+      if (field === 'province') {
+        next.district = '';
+        next.subdistrict = '';
+      }
+      if (field === 'district') {
+        next.subdistrict = '';
+      }
+      return next;
+    });
+  };
 
   const filtered = plantations.filter(p => (p.plantation_name || '').toLowerCase().includes(search.toLowerCase()));
 
@@ -86,10 +175,86 @@ const Plantations = () => {
           <DialogTrigger asChild>
             <Button onClick={openCreate}><Plus className="h-4 w-4 mr-2" /> New Plantation</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>{editId ? 'Edit' : 'New'} Plantation</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div><Label>Name *</Label><Input value={form.name} onChange={e => setForm({ name: e.target.value })} /></div>
+            <div className="space-y-4">
+              {/* 1. Plantation Name */}
+              <div className="space-y-1">
+                <Label>Plantation Name *</Label>
+                <Input value={form.plantation_name} onChange={e => updateField('plantation_name', e.target.value)} />
+              </div>
+
+              {/* 2. Address */}
+              <div className="space-y-1">
+                <Label>Address</Label>
+                <Input value={form.address} onChange={e => updateField('address', e.target.value)} />
+              </div>
+
+              {/* 3. Province */}
+              <div className="space-y-1">
+                <Label>Province</Label>
+                <Select value={form.province} onValueChange={v => updateField('province', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกจังหวัด" /></SelectTrigger>
+                  <SelectContent>
+                    {provinces.map(p => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 4. District */}
+              <div className="space-y-1">
+                <Label>District</Label>
+                <Select value={form.district} onValueChange={v => updateField('district', v)} disabled={!form.province}>
+                  <SelectTrigger><SelectValue placeholder="เลือกอำเภอ/เขต" /></SelectTrigger>
+                  <SelectContent>
+                    {districts.map(d => (
+                      <SelectItem key={d} value={d}>{d}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 5. Subdistrict */}
+              <div className="space-y-1">
+                <Label>Subdistrict</Label>
+                <Select value={form.subdistrict} onValueChange={v => updateField('subdistrict', v)} disabled={!form.district}>
+                  <SelectTrigger><SelectValue placeholder="เลือกตำบล/แขวง" /></SelectTrigger>
+                  <SelectContent>
+                    {subdistricts.map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 6. Plot's Month */}
+              <div className="space-y-1">
+                <Label>Plot's Month</Label>
+                <Select value={form.plots_month} onValueChange={v => updateField('plots_month', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกเดือน-ปี" /></SelectTrigger>
+                  <SelectContent>
+                    {monthYearOptions.map(m => (
+                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 7. Plot's Type */}
+              <div className="space-y-1">
+                <Label>Plot's Type</Label>
+                <Select value={form.plots_type} onValueChange={v => updateField('plots_type', v)}>
+                  <SelectTrigger><SelectValue placeholder="เลือกประเภท" /></SelectTrigger>
+                  <SelectContent>
+                    {plotTypeOptions.map(t => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <Button onClick={handleSave} className="w-full">{editId ? 'Update' : 'Create'}</Button>
             </div>
           </DialogContent>
@@ -114,6 +279,11 @@ const Plantations = () => {
                   <Sprout className="h-5 w-5 text-primary" />
                   {p.plantation_name}
                 </CardTitle>
+                {p.province && (
+                  <p className="text-xs text-muted-foreground">
+                    {[p.subdistrict, p.district, p.province].filter(Boolean).join(', ')}
+                  </p>
+                )}
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">

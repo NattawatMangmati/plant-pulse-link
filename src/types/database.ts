@@ -32,6 +32,27 @@ export interface Plantation {
   id: string;
   farmer_id: string;
   plantation_name: string;
+  address: string | null;
+  province: string | null;
+  district: string | null;
+  subdistrict: string | null;
+  "plot's_month": string | null;
+  "plot's_type": string | null;
+  area: number | null;
+  plant_per_rai: string | null;
+  plant_spacing: string | null;
+  inter_crop: string | null;
+  total_plant: number | null;
+  total_plant_register: number | null;
+  force_plant: number | null;
+  force_month: string | null;
+  first_force_date: string | null;
+  second_force_date: string | null;
+  "60_days_after_force": string | null;
+  "120_days_after_force": string | null;
+  "140_days_after_force": string | null;
+  inspectorid: string | null;
+  "จุก/หน่อ": string | null;
   created_at: string;
 }
 
