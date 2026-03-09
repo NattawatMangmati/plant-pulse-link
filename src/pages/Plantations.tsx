@@ -53,7 +53,7 @@ const Plantations = () => {
       if (error) toast.error(error.message);
       else { toast.success('Updated'); setDialogOpen(false); }
     } else {
-      const { error } = await supabase.from('plantations').insert([payload]);
+      const { error } = await supabase.from('plantations').insert([{ plantation_name: form.name, farmer_id: farmerId! }]);
       if (error) toast.error(error.message);
       else { toast.success('Created'); setDialogOpen(false); }
     }
