@@ -12,8 +12,7 @@ import { Plus, Search, ClipboardCheck, Clock, CalendarCheck, Sprout } from 'luci
 
 const inspectionTypes: { type: InspectionType; label: string; icon: typeof ClipboardCheck }[] = [
   { type: 'inspection', label: 'Inspection', icon: ClipboardCheck },
-  { type: 'after_45', label: 'After 45 Days', icon: Clock },
-  { type: 'after_90', label: 'After 90 Days', icon: Clock },
+  { type: 'after_60', label: 'After 60 Days', icon: Clock },
   { type: 'after_120', label: 'After 120 Days', icon: Clock },
   { type: 'after_140', label: 'After 140 Days', icon: Clock },
   { type: 'harvest_plan', label: 'Harvest Plan', icon: CalendarCheck },

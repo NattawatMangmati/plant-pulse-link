@@ -35,7 +35,7 @@ export interface Plantation {
   created_at: string;
 }
 
-export type InspectionType = 'inspection' | 'after_45' | 'after_90' | 'after_120' | 'after_140' | 'harvest_plan';
+export type InspectionType = 'inspection' | 'after_60' | 'after_120' | 'after_140' | 'harvest_plan';
 
 export interface Inspection {
   id: string;
