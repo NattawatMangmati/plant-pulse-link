@@ -754,6 +754,111 @@ const Inspections = () => {
                     </div>
                   </div>
                 </>
+              ) : isHarvestPlan ? (
+                <>
+                  {/* 1. Week */}
+                  <div>
+                    <Label>Week *</Label>
+                    <Select value={harvestForm.week} onValueChange={v => updateHarvestField('week', v)}>
+                      <SelectTrigger><SelectValue placeholder="เลือกสัปดาห์" /></SelectTrigger>
+                      <SelectContent>
+                        {weekOptions.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 2. Predict date */}
+                  <div>
+                    <Label>Predict date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !harvestForm.predict_date && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {harvestForm.predict_date ? format(harvestForm.predict_date, 'PPP') : 'Pick a date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={harvestForm.predict_date} onSelect={d => updateHarvestField('predict_date', d)} initialFocus className="p-3 pointer-events-auto" />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* 3. Actual date */}
+                  <div>
+                    <Label>Actual date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !harvestForm.actual_date && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {harvestForm.actual_date ? format(harvestForm.actual_date, 'PPP') : 'Pick a date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={harvestForm.actual_date} onSelect={d => updateHarvestField('actual_date', d)} initialFocus className="p-3 pointer-events-auto" />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* 4. แผนการส่ง */}
+                  <div>
+                    <Label>แผนการส่ง (harvest_plan)</Label>
+                    <Input type="number" value={harvestForm.harvest_plan} onChange={e => updateHarvestField('harvest_plan', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 5. ส่งจริง */}
+                  <div>
+                    <Label>ส่งจริง (actual_havest)</Label>
+                    <Input type="number" value={harvestForm.actual_havest} onChange={e => updateHarvestField('actual_havest', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 6. เก็บเข้ามาก่อน */}
+                  <div>
+                    <Label>เก็บเข้ามาก่อน (move_to_previous_week)</Label>
+                    <Input type="number" value={harvestForm.move_to_previous_week} onChange={e => updateHarvestField('move_to_previous_week', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 7. เลื่อนไปสัปดาห์อื่น */}
+                  <div>
+                    <Label>เลื่อนไปสัปดาห์อื่น (postpone_another_week)</Label>
+                    <Input type="number" value={harvestForm.postpone_another_week} onChange={e => updateHarvestField('postpone_another_week', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 8. มาจากสัปดาห์ก่อน */}
+                  <div>
+                    <Label>มาจากสัปดาห์ก่อน (move_from_previous_week)</Label>
+                    <Input type="number" value={harvestForm.move_from_previous_week} onChange={e => updateHarvestField('move_from_previous_week', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 9. บังคับจริง */}
+                  <div>
+                    <Label>บังคับจริง (actual_forcing)</Label>
+                    <Input type="number" value={harvestForm.actual_forcing} onChange={e => updateHarvestField('actual_forcing', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 10. นอกแผน */}
+                  <div>
+                    <Label>นอกแผน (out_plan)</Label>
+                    <Input type="number" value={harvestForm.out_plan} onChange={e => updateHarvestField('out_plan', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 11. คุณภาพต่ำ */}
+                  <div>
+                    <Label>คุณภาพต่ำ (low_quality)</Label>
+                    <Input type="number" value={harvestForm.low_quality} onChange={e => updateHarvestField('low_quality', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 12. ขายที่อื่น */}
+                  <div>
+                    <Label>ขายที่อื่น (sale_elsewhere)</Label>
+                    <Input type="number" value={harvestForm.sale_elsewhere} onChange={e => updateHarvestField('sale_elsewhere', e.target.value)} placeholder="0" />
+                  </div>
+
+                  {/* 13. ประเมิณคลาดเคลื่อน */}
+                  <div>
+                    <Label>ประเมิณคลาดเคลื่อน (est_error)</Label>
+                    <Input type="number" value={harvestForm.est_error} onChange={e => updateHarvestField('est_error', e.target.value)} placeholder="0" />
+                  </div>
+                </>
               ) : (
                 <p className="text-sm text-muted-foreground">A new record will be created for this plantation.</p>
               )}
