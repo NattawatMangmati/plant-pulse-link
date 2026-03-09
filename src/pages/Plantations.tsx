@@ -21,6 +21,21 @@ const inspectionTypes: { type: InspectionType; label: string; icon: typeof Clipb
 ];
 
 const plotTypeOptions = ['ต้นใหม่', 'เลี้ยงตอ'];
+const interCropOptions = ['แซมยางพารา', 'แซมปาล์ม', 'แซมทุเรียน', 'แซมมะพร้าว', 'พื้นที่เปล่า'];
+const plantSpacingOptions = ['ร่องคู่ 2 แถว 35 x 40 (ปูพื้น)', 'ร่องคู่ 4 แถว 35 x 35 (ยกร่อง)', 'ร่องคู่ 4 แถว 30 x 35 (ยกร่อง)'];
+const plantPerRaiOptions = Array.from({ length: 17 }, (_, i) => String(4000 + i * 500));
+
+const generateForceMonthOptions = () => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const options: string[] = [];
+  for (let year = 2025; year <= 2028; year++) {
+    for (const month of months) {
+      options.push(`${month}-${year}`);
+    }
+  }
+  return options;
+};
+const forceMonthOptions = generateForceMonthOptions();
 
 const generateMonthYearOptions = () => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
