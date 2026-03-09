@@ -301,6 +301,10 @@ const Inspections = () => {
     setAfter60Form(prev => ({ ...prev, [field]: value }));
   };
 
+  const updateHarvestField = (field: keyof HarvestPlanForm, value: any) => {
+    setHarvestForm(prev => ({ ...prev, [field]: value }));
+  };
+
   const handleSave = async () => {
     if (isInspectionTable) {
       if (!form.รอบติดตาม) { toast.error('กรุณาเลือกรอบติดตาม'); return; }
