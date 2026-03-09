@@ -156,7 +156,51 @@ const Inspections = () => {
     return f + nf;
   }, [after60Form.fruiting_row3, after60Form.non_fruiting_row3]);
 
-  // Fetch plantation data for auto-fill
+  // Fields 16-21, 23: auto-calculated
+  const totalFruiting = useMemo(() => {
+    return (parseFloat(after60Form.fruiting_row1) || 0) + (parseFloat(after60Form.fruiting_row2) || 0) + (parseFloat(after60Form.fruiting_row3) || 0);
+  }, [after60Form.fruiting_row1, after60Form.fruiting_row2, after60Form.fruiting_row3]);
+
+  const totalNonFruiting = useMemo(() => {
+    return (parseFloat(after60Form['Non-fruiting_row1']) || 0) + (parseFloat(after60Form.non_fruiting_row2) || 0) + (parseFloat(after60Form.non_fruiting_row3) || 0);
+  }, [after60Form['Non-fruiting_row1'], after60Form.non_fruiting_row2, after60Form.non_fruiting_row3]);
+
+  const totalAll = totalRow1 + totalRow2 + totalRow3;
+
+  const fruitingPerc = useMemo(() => {
+    if (totalAll === 0) return 0;
+    return Math.round((totalFruiting / totalAll) * 100 * 100) / 100;
+  }, [totalFruiting, totalAll]);
+
+  const nonFruitingPerc = useMemo(() => {
+    if (totalAll === 0) return 0;
+    return Math.round((totalNonFruiting / totalAll) * 100 * 100) / 100;
+  }, [totalNonFruiting, totalAll]);
+
+  const productivePlant = useMemo(() => {
+    const fp = parseFloat(after60Form.force_plant) || 0;
+    return Math.round((fruitingPerc * fp) / 100);
+  }, [fruitingPerc, after60Form.force_plant]);
+
+  const estProducts = useMemo(() => {
+    const fp = parseFloat(after60Form.force_plant) || 0;
+    return Math.round((totalFruiting * fp) * 100 * 100) / 100;
+  }, [totalFruiting, after60Form.force_plant]);
+
+  // Photo upload for 60days
+  const handle60PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading60Photo(true);
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${plantationId}/${Date.now()}.${fileExt}`;
+    const { error } = await supabase.storage.from('60D photo').upload(filePath, file);
+    if (error) { toast.error(error.message); setUploading60Photo(false); return; }
+    const { data: urlData } = supabase.storage.from('60D photo').getPublicUrl(filePath);
+    updateAfter60Field('plant_photo', urlData.publicUrl);
+    setUploading60Photo(false);
+  };
+
   useEffect(() => {
     const fetchPlantation = async () => {
       if (!plantationId) return;
