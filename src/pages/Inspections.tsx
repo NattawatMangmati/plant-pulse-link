@@ -120,6 +120,7 @@ const Inspections = () => {
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [uploading60Photo, setUploading60Photo] = useState(false);
 
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
