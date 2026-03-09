@@ -61,22 +61,9 @@ interface After60Form {
   non_fruiting_row2: string;
   fruiting_row3: string;
   non_fruiting_row3: string;
+  est_harvest_date: Date | undefined;
+  plant_photo: string;
 }
-
-const emptyForm: InspectionForm = {
-  รอบติดตาม: '',
-  date: undefined,
-  Environment: '',
-  โรค: '',
-  การตาย: '',
-  previous_weight: '',
-  sub_small: '',
-  small: '',
-  medium: '',
-  large: '',
-  very_large: '',
-  inter_crop: '',
-};
 
 const emptyAfter60Form: After60Form = {
   'M-Y plot': '',
@@ -91,6 +78,8 @@ const emptyAfter60Form: After60Form = {
   non_fruiting_row2: '',
   fruiting_row3: '',
   non_fruiting_row3: '',
+  est_harvest_date: undefined,
+  plant_photo: '',
 };
 
 interface GenericRecord {
