@@ -63,6 +63,7 @@ const emptyForm: InspectionForm = {
   inter_crop: '',
 };
 
+interface After60Form {
   'M-Y plot': string;
   m_y_force: string;
   Area: string;
