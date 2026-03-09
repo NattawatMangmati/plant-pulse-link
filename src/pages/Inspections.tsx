@@ -888,9 +888,12 @@ const Inspections = () => {
                     {isInspectionTable && rec['รอบติดตาม'] && (
                       <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">{rec['รอบติดตาม'] as string}</span>
                     )}
+                    {isHarvestPlan && rec.week && (
+                      <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">{rec.week as string}</span>
+                    )}
                   </span>
                   <div className="flex gap-1">
-                    {(isInspectionTable || isAfter60) && (
+                    {(isInspectionTable || isAfter60 || isHarvestPlan) && (
                       <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(rec)}>
                         <Edit className="h-3.5 w-3.5" />
                       </Button>
