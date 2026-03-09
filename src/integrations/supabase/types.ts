@@ -268,31 +268,64 @@ export type Database = {
       }
       inspections: {
         Row: {
+          average_weight: number | null
           created_at: string
-          details: string
+          date: string
+          Environment: string | null
           farmerid: string | null
           id: string
           inspectorid: string | null
+          inter_crop: string | null
+          large: number | null
+          medium: number | null
           plantation_id: string
-          type: string
+          previous_weight: number | null
+          small: number | null
+          sub_small: number | null
+          very_large: number | null
+          การตาย: string | null
+          รอบติดตาม: string
+          โรค: string | null
         }
         Insert: {
+          average_weight?: number | null
           created_at?: string
-          details: string
+          date: string
+          Environment?: string | null
           farmerid?: string | null
           id?: string
           inspectorid?: string | null
+          inter_crop?: string | null
+          large?: number | null
+          medium?: number | null
           plantation_id: string
-          type: string
+          previous_weight?: number | null
+          small?: number | null
+          sub_small?: number | null
+          very_large?: number | null
+          การตาย?: string | null
+          รอบติดตาม: string
+          โรค?: string | null
         }
         Update: {
+          average_weight?: number | null
           created_at?: string
-          details?: string
+          date?: string
+          Environment?: string | null
           farmerid?: string | null
           id?: string
           inspectorid?: string | null
+          inter_crop?: string | null
+          large?: number | null
+          medium?: number | null
           plantation_id?: string
-          type?: string
+          previous_weight?: number | null
+          small?: number | null
+          sub_small?: number | null
+          very_large?: number | null
+          การตาย?: string | null
+          รอบติดตาม?: string
+          โรค?: string | null
         }
         Relationships: [
           {
