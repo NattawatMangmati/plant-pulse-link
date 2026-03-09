@@ -31,7 +31,7 @@ export interface Farmer {
 export interface Plantation {
   id: string;
   farmer_id: string;
-  name: string;
+  plantation_name: string;
   created_at: string;
 }
 
