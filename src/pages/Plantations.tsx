@@ -49,11 +49,11 @@ const Plantations = () => {
     const payload = { ...form, farmer_id: farmerId! };
 
     if (editId) {
-      const { error } = await supabase.from('plantations').update({ name: form.name }).eq('id', editId);
+      const { error } = await supabase.from('plantations').update({ plantation_name: form.name }).eq('id', editId);
       if (error) toast.error(error.message);
       else { toast.success('Updated'); setDialogOpen(false); }
     } else {
-      const { error } = await supabase.from('plantations').insert([payload]);
+      const { error } = await supabase.from('plantations').insert([{ plantation_name: form.name, farmer_id: farmerId! }]);
       if (error) toast.error(error.message);
       else { toast.success('Created'); setDialogOpen(false); }
     }
