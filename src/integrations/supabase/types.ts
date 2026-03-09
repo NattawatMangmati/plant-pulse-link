@@ -14,11 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
+      "120days": {
+        Row: {
+          created_at: string
+          farmerid: string | null
+          id: number
+          inspectorid: string | null
+          platationid: string | null
+        }
+        Insert: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          platationid?: string | null
+        }
+        Update: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          platationid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "120days_farmerid_fkey"
+            columns: ["farmerid"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "120days_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "120days_platationid_fkey"
+            columns: ["platationid"]
+            isOneToOne: false
+            referencedRelation: "plantations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      "140days": {
+        Row: {
+          created_at: string
+          farmerid: string | null
+          id: number
+          inspectorid: string | null
+          platationid: string | null
+        }
+        Insert: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          platationid?: string | null
+        }
+        Update: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          platationid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "140days_farmerid_fkey"
+            columns: ["farmerid"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "140days_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "140days_platationid_fkey"
+            columns: ["platationid"]
+            isOneToOne: false
+            referencedRelation: "plantations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      "60days": {
+        Row: {
+          created_at: string
+          farmerid: string | null
+          id: number
+          inspectorid: string | null
+          "M-Y plot": string | null
+          plantationid: string | null
+        }
+        Insert: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          "M-Y plot"?: string | null
+          plantationid?: string | null
+        }
+        Update: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          "M-Y plot"?: string | null
+          plantationid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "60days_farmerid_fkey"
+            columns: ["farmerid"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "60days_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "60days_plantationid_fkey"
+            columns: ["plantationid"]
+            isOneToOne: false
+            referencedRelation: "plantations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farmers: {
         Row: {
           account_no: string | null
           address: string | null
           bank: string | null
+          bookbank_photo: string | null
           branch: string | null
           contract: boolean | null
           created_at: string
@@ -26,7 +168,9 @@ export type Database = {
           farmer_name: string
           farmer_no: string | null
           id: string
+          id_card_photo: string | null
           inspector_id: string
+          profile_photo: string | null
           province: string | null
           subdistrict: string | null
         }
@@ -34,6 +178,7 @@ export type Database = {
           account_no?: string | null
           address?: string | null
           bank?: string | null
+          bookbank_photo?: string | null
           branch?: string | null
           contract?: boolean | null
           created_at?: string
@@ -41,7 +186,9 @@ export type Database = {
           farmer_name: string
           farmer_no?: string | null
           id?: string
+          id_card_photo?: string | null
           inspector_id: string
+          profile_photo?: string | null
           province?: string | null
           subdistrict?: string | null
         }
@@ -49,6 +196,7 @@ export type Database = {
           account_no?: string | null
           address?: string | null
           bank?: string | null
+          bookbank_photo?: string | null
           branch?: string | null
           contract?: boolean | null
           created_at?: string
@@ -56,7 +204,9 @@ export type Database = {
           farmer_name?: string
           farmer_no?: string | null
           id?: string
+          id_card_photo?: string | null
           inspector_id?: string
+          profile_photo?: string | null
           province?: string | null
           subdistrict?: string | null
         }
@@ -70,29 +220,95 @@ export type Database = {
           },
         ]
       }
+      harvest_plan: {
+        Row: {
+          created_at: string
+          farmerid: string | null
+          id: number
+          inspectorid: string | null
+          plantationid: string | null
+        }
+        Insert: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          plantationid?: string | null
+        }
+        Update: {
+          created_at?: string
+          farmerid?: string | null
+          id?: number
+          inspectorid?: string | null
+          plantationid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harvest_plan_farmerid_fkey"
+            columns: ["farmerid"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harvest_plan_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harvest_plan_plantationid_fkey"
+            columns: ["plantationid"]
+            isOneToOne: false
+            referencedRelation: "plantations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inspections: {
         Row: {
           created_at: string
           details: string
+          farmerid: string | null
           id: string
+          inspectorid: string | null
           plantation_id: string
           type: string
         }
         Insert: {
           created_at?: string
           details: string
+          farmerid?: string | null
           id?: string
+          inspectorid?: string | null
           plantation_id: string
           type: string
         }
         Update: {
           created_at?: string
           details?: string
+          farmerid?: string | null
           id?: string
+          inspectorid?: string | null
           plantation_id?: string
           type?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "inspections_farmerid_fkey"
+            columns: ["farmerid"]
+            isOneToOne: false
+            referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspections_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inspections_plantation_id_fkey"
             columns: ["plantation_id"]
@@ -137,22 +353,55 @@ export type Database = {
       }
       plantations: {
         Row: {
+          address: string | null
           created_at: string
+          district: string | null
           farmer_id: string
+          force_month: string | null
           id: string
-          name: string
+          inspectorid: string | null
+          inter_crop: string | null
+          plant_per_rai: string | null
+          plant_spacing: string | null
+          plantation_name: string
+          "plot's_month": string | null
+          "plot's_type": string | null
+          province: string | null
+          subdistrict: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string
+          district?: string | null
           farmer_id: string
+          force_month?: string | null
           id?: string
-          name: string
+          inspectorid?: string | null
+          inter_crop?: string | null
+          plant_per_rai?: string | null
+          plant_spacing?: string | null
+          plantation_name: string
+          "plot's_month"?: string | null
+          "plot's_type"?: string | null
+          province?: string | null
+          subdistrict?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string
+          district?: string | null
           farmer_id?: string
+          force_month?: string | null
           id?: string
-          name?: string
+          inspectorid?: string | null
+          inter_crop?: string | null
+          plant_per_rai?: string | null
+          plant_spacing?: string | null
+          plantation_name?: string
+          "plot's_month"?: string | null
+          "plot's_type"?: string | null
+          province?: string | null
+          subdistrict?: string | null
         }
         Relationships: [
           {
@@ -160,6 +409,13 @@ export type Database = {
             columns: ["farmer_id"]
             isOneToOne: false
             referencedRelation: "farmers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plantations_inspectorid_fkey"
+            columns: ["inspectorid"]
+            isOneToOne: false
+            referencedRelation: "inspectors"
             referencedColumns: ["id"]
           },
         ]

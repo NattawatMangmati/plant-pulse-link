@@ -8,10 +8,24 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Plus, Search, MapPin, CreditCard, FileText } from 'lucide-react';
+import { getProvinces, getDistricts, getSubdistricts } from '@/data/thailand-locations';
+import { thaiBanks } from '@/data/thai-banks';
 
-const emptyFarmer = { farmer_name: '', farmer_no: '', address: '', province: '', district: '', subdistrict: '', bank: '', account_no: '', branch: '', contract: false };
+const emptyFarmer = { 
+  farmer_name: '', 
+  farmer_no: '', 
+  address: '', 
+  province: '', 
+  district: '', 
+  subdistrict: '', 
+  contract: false,
+  bank: '', 
+  account_no: '', 
+  branch: '' 
+};
 
 const Farmers = () => {
   const { inspectorId } = useParams<{ inspectorId: string }>();
@@ -23,6 +37,11 @@ const Farmers = () => {
   const [editId, setEditId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Get available options based on selections
+  const provinces = getProvinces();
+  const districts = form.province ? getDistricts(form.province) : [];
+  const subdistricts = form.province && form.district ? getSubdistricts(form.province, form.district) : [];
 
   const fetchData = async () => {
     if (!inspectorId) return;
@@ -71,16 +90,24 @@ const Farmers = () => {
       province: f.province || '',
       district: f.district || '',
       subdistrict: f.subdistrict || '',
+      contract: f.contract || false,
       bank: f.bank || '',
       account_no: f.account_no || '',
       branch: f.branch || '',
-      contract: f.contract || false,
     });
     setEditId(f.id);
     setDialogOpen(true);
   };
 
   const openCreate = () => { setForm(emptyFarmer); setEditId(null); setDialogOpen(true); };
+
+  const handleProvinceChange = (value: string) => {
+    setForm({ ...form, province: value, district: '', subdistrict: '' });
+  };
+
+  const handleDistrictChange = (value: string) => {
+    setForm({ ...form, district: value, subdistrict: '' });
+  };
 
   const filtered = farmers.filter(f =>
     f.farmer_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -102,24 +129,103 @@ const Farmers = () => {
           </DialogTrigger>
           <DialogContent className="max-h-[85vh] overflow-y-auto">
             <DialogHeader><DialogTitle>{editId ? 'Edit' : 'New'} Farmer</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div><Label>Farmer Name *</Label><Input value={form.farmer_name} onChange={e => setForm({ ...form, farmer_name: e.target.value })} /></div>
-              <div><Label>Farmer No</Label><Input value={form.farmer_no} onChange={e => setForm({ ...form, farmer_no: e.target.value })} /></div>
-              <div><Label>Address</Label><Input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} /></div>
-              <div className="grid grid-cols-3 gap-2">
-                <div><Label>Province</Label><Input value={form.province} onChange={e => setForm({ ...form, province: e.target.value })} /></div>
-                <div><Label>District</Label><Input value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} /></div>
-                <div><Label>Subdistrict</Label><Input value={form.subdistrict} onChange={e => setForm({ ...form, subdistrict: e.target.value })} /></div>
+            <div className="space-y-4">
+              {/* 1. Farmer Name */}
+              <div>
+                <Label>Farmer Name *</Label>
+                <Input value={form.farmer_name} onChange={e => setForm({ ...form, farmer_name: e.target.value })} />
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                <div><Label>Bank</Label><Input value={form.bank} onChange={e => setForm({ ...form, bank: e.target.value })} /></div>
-                <div><Label>Account No</Label><Input value={form.account_no} onChange={e => setForm({ ...form, account_no: e.target.value })} /></div>
-                <div><Label>Branch</Label><Input value={form.branch} onChange={e => setForm({ ...form, branch: e.target.value })} /></div>
+
+              {/* 2. Farmer No */}
+              <div>
+                <Label>Farmer No</Label>
+                <Input value={form.farmer_no} onChange={e => setForm({ ...form, farmer_no: e.target.value })} />
               </div>
+
+              {/* 3. Address */}
+              <div>
+                <Label>Address</Label>
+                <Input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} />
+              </div>
+
+              {/* 4. Province */}
+              <div>
+                <Label>Province</Label>
+                <Select value={form.province} onValueChange={handleProvinceChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกจังหวัด" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {provinces.map(p => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 5. District */}
+              <div>
+                <Label>District</Label>
+                <Select value={form.district} onValueChange={handleDistrictChange} disabled={!form.province}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={form.province ? "เลือกอำเภอ/เขต" : "กรุณาเลือกจังหวัดก่อน"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {districts.map(d => (
+                      <SelectItem key={d} value={d}>{d}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 6. Subdistrict */}
+              <div>
+                <Label>Subdistrict</Label>
+                <Select value={form.subdistrict} onValueChange={v => setForm({ ...form, subdistrict: v })} disabled={!form.district}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={form.district ? "เลือกตำบล/แขวง" : "กรุณาเลือกอำเภอ/เขตก่อน"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subdistricts.map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 7. Contract */}
               <div className="flex items-center gap-2">
                 <Label>Contract</Label>
                 <Switch checked={form.contract} onCheckedChange={val => setForm({ ...form, contract: val })} />
               </div>
+
+              {/* 8. Bank */}
+              <div>
+                <Label>Bank</Label>
+                <Select value={form.bank} onValueChange={v => setForm({ ...form, bank: v })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกธนาคาร" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {thaiBanks.map(b => (
+                      <SelectItem key={b} value={b}>{b}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 9. Account No */}
+              <div>
+                <Label>Account No</Label>
+                <Input value={form.account_no} onChange={e => setForm({ ...form, account_no: e.target.value })} />
+              </div>
+
+              {/* 10. Branch */}
+              <div>
+                <Label>Branch</Label>
+                <Input value={form.branch} onChange={e => setForm({ ...form, branch: e.target.value })} />
+              </div>
+
               <Button onClick={handleSave} className="w-full">{editId ? 'Update' : 'Create'}</Button>
             </div>
           </DialogContent>
@@ -145,6 +251,7 @@ const Farmers = () => {
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {f.address && <p className="flex items-center gap-2 text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{f.address}</p>}
+                {f.province && <p className="text-muted-foreground">{f.subdistrict && `${f.subdistrict}, `}{f.district && `${f.district}, `}{f.province}</p>}
                 {f.bank && <p className="flex items-center gap-2 text-muted-foreground"><CreditCard className="h-3.5 w-3.5" />{f.bank} - {f.account_no}</p>}
                 {f.contract && <p className="flex items-center gap-2 text-muted-foreground"><FileText className="h-3.5 w-3.5" />มีสัญญา</p>}
                 <div className="flex gap-2 pt-3 flex-wrap">
