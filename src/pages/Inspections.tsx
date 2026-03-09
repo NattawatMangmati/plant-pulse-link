@@ -375,6 +375,34 @@ const Inspections = () => {
         if (error) toast.error(error.message);
         else { toast.success('Created'); setDialogOpen(false); }
       }
+    } else if (isHarvestPlan && config) {
+      const payload: Record<string, unknown> = {
+        id: editId || crypto.randomUUID(),
+        plantationid: plantationId!,
+        week: harvestForm.week || null,
+        predict_date: harvestForm.predict_date ? format(harvestForm.predict_date, 'yyyy-MM-dd') : null,
+        actual_date: harvestForm.actual_date ? format(harvestForm.actual_date, 'yyyy-MM-dd') : null,
+        harvest_plan: harvestForm.harvest_plan ? parseFloat(harvestForm.harvest_plan) : null,
+        actual_havest: harvestForm.actual_havest ? parseFloat(harvestForm.actual_havest) : null,
+        move_to_previous_week: harvestForm.move_to_previous_week ? parseFloat(harvestForm.move_to_previous_week) : null,
+        postpone_another_week: harvestForm.postpone_another_week ? parseFloat(harvestForm.postpone_another_week) : null,
+        move_from_previous_week: harvestForm.move_from_previous_week ? parseFloat(harvestForm.move_from_previous_week) : null,
+        actual_forcing: harvestForm.actual_forcing ? parseFloat(harvestForm.actual_forcing) : null,
+        out_plan: harvestForm.out_plan ? parseFloat(harvestForm.out_plan) : null,
+        low_quality: harvestForm.low_quality ? parseFloat(harvestForm.low_quality) : null,
+        sale_elsewhere: harvestForm.sale_elsewhere ? parseFloat(harvestForm.sale_elsewhere) : null,
+        est_error: harvestForm.est_error ? parseFloat(harvestForm.est_error) : null,
+      };
+
+      if (editId) {
+        const { error } = await supabase.from('harvest_plan').update(payload).eq('id', editId as string);
+        if (error) toast.error(error.message);
+        else { toast.success('Updated'); setDialogOpen(false); }
+      } else {
+        const { error } = await supabase.from('harvest_plan').insert([payload] as any);
+        if (error) toast.error(error.message);
+        else { toast.success('Created'); setDialogOpen(false); }
+      }
     } else if (config) {
       if (editId) {
         toast.success('Updated');
@@ -388,6 +416,7 @@ const Inspections = () => {
     }
     setForm(emptyForm);
     setAfter60Form(emptyAfter60Form);
+    setHarvestForm(emptyHarvestPlanForm);
     setEditId(null);
     fetchData();
   };
