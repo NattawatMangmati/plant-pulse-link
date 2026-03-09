@@ -168,6 +168,11 @@ const Plantations = () => {
       subdistrict: p.subdistrict || '',
       plots_month: p["plot's_month"] || '',
       plots_type: p["plot's_type"] || '',
+      force_month: p.force_month || '',
+      inter_crop: p.inter_crop || '',
+      plant_spacing: p.plant_spacing || '',
+      juk_noo: p["จุก/หน่อ"] || '',
+      plant_per_rai: p.plant_per_rai || '',
     });
     setEditId(p.id);
     setDialogOpen(true);
