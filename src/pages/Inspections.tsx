@@ -108,7 +108,7 @@ interface PlantationData {
   force_month: string | null;
   area: number | null;
   force_plant: number | null;
-  first_force_date: string | null;
+  "60_days_after_force": string | null;
 }
 
 const Inspections = () => {
@@ -206,7 +206,7 @@ const Inspections = () => {
       if (!plantationId) return;
       const { data, error } = await supabase
         .from('plantations')
-        .select("\"plot's_month\", force_month, area, force_plant, first_force_date")
+        .select("\"plot's_month\", force_month, area, force_plant, \"60_days_after_force\"")
         .eq('id', plantationId)
         .single();
       if (!error && data) {
