@@ -48,7 +48,21 @@ interface InspectionForm {
   inter_crop: string;
 }
 
-interface After60Form {
+const emptyForm: InspectionForm = {
+  รอบติดตาม: '',
+  date: undefined,
+  Environment: '',
+  โรค: '',
+  การตาย: '',
+  previous_weight: '',
+  sub_small: '',
+  small: '',
+  medium: '',
+  large: '',
+  very_large: '',
+  inter_crop: '',
+};
+
   'M-Y plot': string;
   m_y_force: string;
   Area: string;
