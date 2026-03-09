@@ -131,6 +131,11 @@ const Plantations = () => {
       subdistrict: form.subdistrict || null,
       "plot's_month": form.plots_month || null,
       "plot's_type": form.plots_type || null,
+      force_month: form.force_month || null,
+      inter_crop: form.inter_crop || null,
+      plant_spacing: form.plant_spacing || null,
+      "จุก/หน่อ": form.juk_noo || null,
+      plant_per_rai: form.plant_per_rai || null,
     };
 
     if (editId) {
