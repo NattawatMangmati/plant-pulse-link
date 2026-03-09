@@ -17,45 +17,198 @@ export type Database = {
       "120days": {
         Row: {
           area: number | null
+          avg_nitrate_no1: number | null
+          avg_nitrate_no2: number | null
+          avg_nitrate_no3: number | null
+          avg_nitrate_row1: number | null
+          avg_nitrate_row2: number | null
+          avg_nitrate_row3: number | null
+          avg_total_nitrate: number | null
           created_at: string
+          defect_perc: number | null
+          defect_row1: number | null
+          defect_row2: number | null
+          defect_row3: number | null
+          destroyed_perc: number | null
+          destroyed_row1: number | null
+          destroyed_row2: number | null
+          destroyed_row3: number | null
           farmerid: string | null
+          first_prediction_product: number | null
           force_date: string | null
           force_plant: number | null
+          good_products: number | null
           id: string
           inspection_date: string | null
           inspectorid: string | null
+          large_perc: number | null
+          large_row1: number | null
+          large_row2: number | null
+          large_row3: number | null
+          large_weight: number | null
           m_y_force: string | null
           m_y_plot: string | null
-          nouse: number
+          nitrate_row1_no1: number | null
+          nitrate_row1_no2: number | null
+          nitrate_row1_no3: number | null
+          nitrate_row2_no1: number | null
+          nitrate_row2_no2: number | null
+          nitrate_row2_no3: number | null
+          nitrate_row3_no1: number | null
+          nitrate_row3_no2: number | null
+          nitrate_row3_no3: number | null
+          photo: string | null
           platationid: string | null
+          prediction_product_kg: number | null
+          small_perc: number | null
+          small_row1: number | null
+          small_row2: number | null
+          small_row3: number | null
+          small_weight: number | null
+          total_all: number | null
+          total_defect: number | null
+          total_destroyed: number | null
+          total_large: number | null
+          total_row1: number | null
+          total_row2: number | null
+          total_row3: number | null
+          total_small: number | null
+          total_very_small: number | null
+          very_small_perc: number | null
+          very_small_row1: number | null
+          very_small_row2: number | null
+          very_small_row3: number | null
+          very_small_weight: number | null
         }
         Insert: {
           area?: number | null
+          avg_nitrate_no1?: number | null
+          avg_nitrate_no2?: number | null
+          avg_nitrate_no3?: number | null
+          avg_nitrate_row1?: number | null
+          avg_nitrate_row2?: number | null
+          avg_nitrate_row3?: number | null
+          avg_total_nitrate?: number | null
           created_at?: string
+          defect_perc?: number | null
+          defect_row1?: number | null
+          defect_row2?: number | null
+          defect_row3?: number | null
+          destroyed_perc?: number | null
+          destroyed_row1?: number | null
+          destroyed_row2?: number | null
+          destroyed_row3?: number | null
           farmerid?: string | null
+          first_prediction_product?: number | null
           force_date?: string | null
           force_plant?: number | null
+          good_products?: number | null
           id: string
           inspection_date?: string | null
           inspectorid?: string | null
+          large_perc?: number | null
+          large_row1?: number | null
+          large_row2?: number | null
+          large_row3?: number | null
+          large_weight?: number | null
           m_y_force?: string | null
           m_y_plot?: string | null
-          nouse?: number
+          nitrate_row1_no1?: number | null
+          nitrate_row1_no2?: number | null
+          nitrate_row1_no3?: number | null
+          nitrate_row2_no1?: number | null
+          nitrate_row2_no2?: number | null
+          nitrate_row2_no3?: number | null
+          nitrate_row3_no1?: number | null
+          nitrate_row3_no2?: number | null
+          nitrate_row3_no3?: number | null
+          photo?: string | null
           platationid?: string | null
+          prediction_product_kg?: number | null
+          small_perc?: number | null
+          small_row1?: number | null
+          small_row2?: number | null
+          small_row3?: number | null
+          small_weight?: number | null
+          total_all?: number | null
+          total_defect?: number | null
+          total_destroyed?: number | null
+          total_large?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
+          total_small?: number | null
+          total_very_small?: number | null
+          very_small_perc?: number | null
+          very_small_row1?: number | null
+          very_small_row2?: number | null
+          very_small_row3?: number | null
+          very_small_weight?: number | null
         }
         Update: {
           area?: number | null
+          avg_nitrate_no1?: number | null
+          avg_nitrate_no2?: number | null
+          avg_nitrate_no3?: number | null
+          avg_nitrate_row1?: number | null
+          avg_nitrate_row2?: number | null
+          avg_nitrate_row3?: number | null
+          avg_total_nitrate?: number | null
           created_at?: string
+          defect_perc?: number | null
+          defect_row1?: number | null
+          defect_row2?: number | null
+          defect_row3?: number | null
+          destroyed_perc?: number | null
+          destroyed_row1?: number | null
+          destroyed_row2?: number | null
+          destroyed_row3?: number | null
           farmerid?: string | null
+          first_prediction_product?: number | null
           force_date?: string | null
           force_plant?: number | null
+          good_products?: number | null
           id?: string
           inspection_date?: string | null
           inspectorid?: string | null
+          large_perc?: number | null
+          large_row1?: number | null
+          large_row2?: number | null
+          large_row3?: number | null
+          large_weight?: number | null
           m_y_force?: string | null
           m_y_plot?: string | null
-          nouse?: number
+          nitrate_row1_no1?: number | null
+          nitrate_row1_no2?: number | null
+          nitrate_row1_no3?: number | null
+          nitrate_row2_no1?: number | null
+          nitrate_row2_no2?: number | null
+          nitrate_row2_no3?: number | null
+          nitrate_row3_no1?: number | null
+          nitrate_row3_no2?: number | null
+          nitrate_row3_no3?: number | null
+          photo?: string | null
           platationid?: string | null
+          prediction_product_kg?: number | null
+          small_perc?: number | null
+          small_row1?: number | null
+          small_row2?: number | null
+          small_row3?: number | null
+          small_weight?: number | null
+          total_all?: number | null
+          total_defect?: number | null
+          total_destroyed?: number | null
+          total_large?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
+          total_small?: number | null
+          total_very_small?: number | null
+          very_small_perc?: number | null
+          very_small_row1?: number | null
+          very_small_row2?: number | null
+          very_small_row3?: number | null
+          very_small_weight?: number | null
         }
         Relationships: [
           {
@@ -83,25 +236,199 @@ export type Database = {
       }
       "140days": {
         Row: {
+          area: number | null
+          avg_nitrate_no1: number | null
+          avg_nitrate_no2: number | null
+          avg_nitrate_no3: number | null
+          avg_nitrate_row1: number | null
+          avg_nitrate_row2: number | null
+          avg_nitrate_row3: number | null
+          avg_total_nitrate: number | null
           created_at: string
+          defect_perc: number | null
+          defect_row1: number | null
+          defect_row2: number | null
+          defect_row3: number | null
+          destroyed_perc: number | null
+          destroyed_row1: number | null
+          destroyed_row2: number | null
+          destroyed_row3: number | null
           farmerid: string | null
-          id: number
+          first_prediction_product: number | null
+          force_date: string | null
+          force_plant: number | null
+          good_products: number | null
+          id: string
+          inspection_date: string | null
           inspectorid: string | null
+          large_perc: number | null
+          large_row1: number | null
+          large_row2: number | null
+          large_row3: number | null
+          large_weight: number | null
+          m_y_force: string | null
+          m_y_plot: string | null
+          nitrate_row1_no1: number | null
+          nitrate_row1_no2: number | null
+          nitrate_row1_no3: number | null
+          nitrate_row2_no1: number | null
+          nitrate_row2_no2: number | null
+          nitrate_row2_no3: number | null
+          nitrate_row3_no1: number | null
+          nitrate_row3_no2: number | null
+          nitrate_row3_no3: number | null
+          photo: string | null
           platationid: string | null
+          prediction_product_kg: number | null
+          small_perc: number | null
+          small_row1: number | null
+          small_row2: number | null
+          small_row3: number | null
+          small_weight: number | null
+          total_all: number | null
+          total_defect: number | null
+          total_destroyed: number | null
+          total_large: number | null
+          total_row1: number | null
+          total_row2: number | null
+          total_row3: number | null
+          total_small: number | null
+          total_very_small: number | null
+          very_small_perc: number | null
+          very_small_row1: number | null
+          very_small_row2: number | null
+          very_small_row3: number | null
+          very_small_weight: number | null
         }
         Insert: {
+          area?: number | null
+          avg_nitrate_no1?: number | null
+          avg_nitrate_no2?: number | null
+          avg_nitrate_no3?: number | null
+          avg_nitrate_row1?: number | null
+          avg_nitrate_row2?: number | null
+          avg_nitrate_row3?: number | null
+          avg_total_nitrate?: number | null
           created_at?: string
+          defect_perc?: number | null
+          defect_row1?: number | null
+          defect_row2?: number | null
+          defect_row3?: number | null
+          destroyed_perc?: number | null
+          destroyed_row1?: number | null
+          destroyed_row2?: number | null
+          destroyed_row3?: number | null
           farmerid?: string | null
-          id?: number
+          first_prediction_product?: number | null
+          force_date?: string | null
+          force_plant?: number | null
+          good_products?: number | null
+          id: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          large_perc?: number | null
+          large_row1?: number | null
+          large_row2?: number | null
+          large_row3?: number | null
+          large_weight?: number | null
+          m_y_force?: string | null
+          m_y_plot?: string | null
+          nitrate_row1_no1?: number | null
+          nitrate_row1_no2?: number | null
+          nitrate_row1_no3?: number | null
+          nitrate_row2_no1?: number | null
+          nitrate_row2_no2?: number | null
+          nitrate_row2_no3?: number | null
+          nitrate_row3_no1?: number | null
+          nitrate_row3_no2?: number | null
+          nitrate_row3_no3?: number | null
+          photo?: string | null
           platationid?: string | null
+          prediction_product_kg?: number | null
+          small_perc?: number | null
+          small_row1?: number | null
+          small_row2?: number | null
+          small_row3?: number | null
+          small_weight?: number | null
+          total_all?: number | null
+          total_defect?: number | null
+          total_destroyed?: number | null
+          total_large?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
+          total_small?: number | null
+          total_very_small?: number | null
+          very_small_perc?: number | null
+          very_small_row1?: number | null
+          very_small_row2?: number | null
+          very_small_row3?: number | null
+          very_small_weight?: number | null
         }
         Update: {
+          area?: number | null
+          avg_nitrate_no1?: number | null
+          avg_nitrate_no2?: number | null
+          avg_nitrate_no3?: number | null
+          avg_nitrate_row1?: number | null
+          avg_nitrate_row2?: number | null
+          avg_nitrate_row3?: number | null
+          avg_total_nitrate?: number | null
           created_at?: string
+          defect_perc?: number | null
+          defect_row1?: number | null
+          defect_row2?: number | null
+          defect_row3?: number | null
+          destroyed_perc?: number | null
+          destroyed_row1?: number | null
+          destroyed_row2?: number | null
+          destroyed_row3?: number | null
           farmerid?: string | null
-          id?: number
+          first_prediction_product?: number | null
+          force_date?: string | null
+          force_plant?: number | null
+          good_products?: number | null
+          id?: string
+          inspection_date?: string | null
           inspectorid?: string | null
+          large_perc?: number | null
+          large_row1?: number | null
+          large_row2?: number | null
+          large_row3?: number | null
+          large_weight?: number | null
+          m_y_force?: string | null
+          m_y_plot?: string | null
+          nitrate_row1_no1?: number | null
+          nitrate_row1_no2?: number | null
+          nitrate_row1_no3?: number | null
+          nitrate_row2_no1?: number | null
+          nitrate_row2_no2?: number | null
+          nitrate_row2_no3?: number | null
+          nitrate_row3_no1?: number | null
+          nitrate_row3_no2?: number | null
+          nitrate_row3_no3?: number | null
+          photo?: string | null
           platationid?: string | null
+          prediction_product_kg?: number | null
+          small_perc?: number | null
+          small_row1?: number | null
+          small_row2?: number | null
+          small_row3?: number | null
+          small_weight?: number | null
+          total_all?: number | null
+          total_defect?: number | null
+          total_destroyed?: number | null
+          total_large?: number | null
+          total_row1?: number | null
+          total_row2?: number | null
+          total_row3?: number | null
+          total_small?: number | null
+          total_very_small?: number | null
+          very_small_perc?: number | null
+          very_small_row1?: number | null
+          very_small_row2?: number | null
+          very_small_row3?: number | null
+          very_small_weight?: number | null
         }
         Relationships: [
           {
@@ -145,7 +472,6 @@ export type Database = {
           inspectorid: string | null
           m_y_force: string | null
           "M-Y plot": string | null
-          "no-use": number
           "non-fruiting_perc": number | null
           "Non-fruiting_row1": number | null
           "non-fruiting_row2": number | null
@@ -177,7 +503,6 @@ export type Database = {
           inspectorid?: string | null
           m_y_force?: string | null
           "M-Y plot"?: string | null
-          "no-use"?: number
           "non-fruiting_perc"?: number | null
           "Non-fruiting_row1"?: number | null
           "non-fruiting_row2"?: number | null
@@ -209,7 +534,6 @@ export type Database = {
           inspectorid?: string | null
           m_y_force?: string | null
           "M-Y plot"?: string | null
-          "no-use"?: number
           "non-fruiting_perc"?: number | null
           "Non-fruiting_row1"?: number | null
           "non-fruiting_row2"?: number | null
@@ -315,25 +639,64 @@ export type Database = {
       }
       harvest_plan: {
         Row: {
+          actual_date: string | null
+          actual_forcing: number | null
+          actual_havest: number | null
           created_at: string
+          est_error: number | null
           farmerid: string | null
-          id: number
+          harvest_plan: number | null
+          id: string
           inspectorid: string | null
+          low_quality: number | null
+          move_from_previous_week: number | null
+          move_to_previous_week: number | null
+          out_plan: number | null
           plantationid: string | null
+          postpone_another_week: number | null
+          predict_date: string | null
+          sale_elsewhere: number | null
+          week: string | null
         }
         Insert: {
+          actual_date?: string | null
+          actual_forcing?: number | null
+          actual_havest?: number | null
           created_at?: string
+          est_error?: number | null
           farmerid?: string | null
-          id?: number
+          harvest_plan?: number | null
+          id: string
           inspectorid?: string | null
+          low_quality?: number | null
+          move_from_previous_week?: number | null
+          move_to_previous_week?: number | null
+          out_plan?: number | null
           plantationid?: string | null
+          postpone_another_week?: number | null
+          predict_date?: string | null
+          sale_elsewhere?: number | null
+          week?: string | null
         }
         Update: {
+          actual_date?: string | null
+          actual_forcing?: number | null
+          actual_havest?: number | null
           created_at?: string
+          est_error?: number | null
           farmerid?: string | null
-          id?: number
+          harvest_plan?: number | null
+          id?: string
           inspectorid?: string | null
+          low_quality?: number | null
+          move_from_previous_week?: number | null
+          move_to_previous_week?: number | null
+          out_plan?: number | null
           plantationid?: string | null
+          postpone_another_week?: number | null
+          predict_date?: string | null
+          sale_elsewhere?: number | null
+          week?: string | null
         }
         Relationships: [
           {

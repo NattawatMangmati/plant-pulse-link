@@ -33,6 +33,53 @@ const tableConfig: Record<InspectionType, { table: string; plantationCol: string
 
 const followUpOptions = ['2 เดือน', '4 เดือน', '6 เดือน', '8 เดือน', '10 เดือน'];
 
+const weekOptions = [
+  "29 Mar - 04 Apr 2026","05 Apr - 11 Apr 2026","12 Apr - 18 Apr 2026","19 Apr - 25 Apr 2026",
+  "26 Apr - 02 May 2026","03 May - 09 May 2026","10 May - 16 May 2026","17 May - 23 May 2026",
+  "24 May - 30 May 2026","31 May - 06 Jun 2026","07 Jun - 13 Jun 2026","14 Jun - 20 Jun 2026",
+  "21 Jun - 27 Jun 2026","28 Jun - 04 Jul 2026","05 Jul - 11 Jul 2026","12 Jul - 18 Jul 2026",
+  "19 Jul - 25 Jul 2026","26 Jul - 01 Aug 2026","02 Aug - 08 Aug 2026","09 Aug - 15 Aug 2026",
+  "16 Aug - 22 Aug 2026","23 Aug - 29 Aug 2026","30 Aug - 05 Sep 2026","06 Sep - 12 Sep 2026",
+  "13 Sep - 19 Sep 2026","20 Sep - 26 Sep 2026","27 Sep - 03 Oct 2026","04 Oct - 10 Oct 2026",
+  "11 Oct - 17 Oct 2026","18 Oct - 24 Oct 2026","25 Oct - 31 Oct 2026","01 Nov - 07 Nov 2026",
+  "08 Nov - 14 Nov 2026","15 Nov - 21 Nov 2026","22 Nov - 28 Nov 2026","29 Nov - 05 Dec 2026",
+  "06 Dec - 12 Dec 2026","13 Dec - 19 Dec 2026","20 Dec - 26 Dec 2026","27 Dec - 02 Jan 2027",
+  "03 Jan - 09 Jan 2027","10 Jan - 16 Jan 2027","17 Jan - 23 Jan 2027","24 Jan - 30 Jan 2027",
+  "31 Jan - 06 Feb 2027","07 Feb - 13 Feb 2027",
+];
+
+interface HarvestPlanForm {
+  week: string;
+  predict_date: Date | undefined;
+  actual_date: Date | undefined;
+  harvest_plan: string;
+  actual_havest: string;
+  move_to_previous_week: string;
+  postpone_another_week: string;
+  move_from_previous_week: string;
+  actual_forcing: string;
+  out_plan: string;
+  low_quality: string;
+  sale_elsewhere: string;
+  est_error: string;
+}
+
+const emptyHarvestPlanForm: HarvestPlanForm = {
+  week: '',
+  predict_date: undefined,
+  actual_date: undefined,
+  harvest_plan: '',
+  actual_havest: '',
+  move_to_previous_week: '',
+  postpone_another_week: '',
+  move_from_previous_week: '',
+  actual_forcing: '',
+  out_plan: '',
+  low_quality: '',
+  sale_elsewhere: '',
+  est_error: '',
+};
+
 interface InspectionForm {
   รอบติดตาม: string;
   date: Date | undefined;
@@ -117,6 +164,7 @@ const Inspections = () => {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<InspectionForm>(emptyForm);
   const [after60Form, setAfter60Form] = useState<After60Form>(emptyAfter60Form);
+  const [harvestForm, setHarvestForm] = useState<HarvestPlanForm>(emptyHarvestPlanForm);
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -125,6 +173,7 @@ const Inspections = () => {
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
   const isAfter60 = type === 'after_60';
+  const isHarvestPlan = type === 'harvest_plan';
 
   const averageWeight = useMemo(() => {
     const vs = parseFloat(form.sub_small) || 0;
@@ -252,6 +301,10 @@ const Inspections = () => {
     setAfter60Form(prev => ({ ...prev, [field]: value }));
   };
 
+  const updateHarvestField = (field: keyof HarvestPlanForm, value: any) => {
+    setHarvestForm(prev => ({ ...prev, [field]: value }));
+  };
+
   const handleSave = async () => {
     if (isInspectionTable) {
       if (!form.รอบติดตาม) { toast.error('กรุณาเลือกรอบติดตาม'); return; }
@@ -322,6 +375,34 @@ const Inspections = () => {
         if (error) toast.error(error.message);
         else { toast.success('Created'); setDialogOpen(false); }
       }
+    } else if (isHarvestPlan && config) {
+      const payload: Record<string, unknown> = {
+        id: editId || crypto.randomUUID(),
+        plantationid: plantationId!,
+        week: harvestForm.week || null,
+        predict_date: harvestForm.predict_date ? format(harvestForm.predict_date, 'yyyy-MM-dd') : null,
+        actual_date: harvestForm.actual_date ? format(harvestForm.actual_date, 'yyyy-MM-dd') : null,
+        harvest_plan: harvestForm.harvest_plan ? parseFloat(harvestForm.harvest_plan) : null,
+        actual_havest: harvestForm.actual_havest ? parseFloat(harvestForm.actual_havest) : null,
+        move_to_previous_week: harvestForm.move_to_previous_week ? parseFloat(harvestForm.move_to_previous_week) : null,
+        postpone_another_week: harvestForm.postpone_another_week ? parseFloat(harvestForm.postpone_another_week) : null,
+        move_from_previous_week: harvestForm.move_from_previous_week ? parseFloat(harvestForm.move_from_previous_week) : null,
+        actual_forcing: harvestForm.actual_forcing ? parseFloat(harvestForm.actual_forcing) : null,
+        out_plan: harvestForm.out_plan ? parseFloat(harvestForm.out_plan) : null,
+        low_quality: harvestForm.low_quality ? parseFloat(harvestForm.low_quality) : null,
+        sale_elsewhere: harvestForm.sale_elsewhere ? parseFloat(harvestForm.sale_elsewhere) : null,
+        est_error: harvestForm.est_error ? parseFloat(harvestForm.est_error) : null,
+      };
+
+      if (editId) {
+        const { error } = await supabase.from('harvest_plan').update(payload).eq('id', editId as string);
+        if (error) toast.error(error.message);
+        else { toast.success('Updated'); setDialogOpen(false); }
+      } else {
+        const { error } = await supabase.from('harvest_plan').insert([payload] as any);
+        if (error) toast.error(error.message);
+        else { toast.success('Created'); setDialogOpen(false); }
+      }
     } else if (config) {
       if (editId) {
         toast.success('Updated');
@@ -335,6 +416,7 @@ const Inspections = () => {
     }
     setForm(emptyForm);
     setAfter60Form(emptyAfter60Form);
+    setHarvestForm(emptyHarvestPlanForm);
     setEditId(null);
     fetchData();
   };
@@ -380,6 +462,22 @@ const Inspections = () => {
         est_harvest_date: rec.est_harvest_date ? parseISO(rec.est_harvest_date as string) : undefined,
         plant_photo: (rec.plant_photo as string) || '',
       });
+    } else if (isHarvestPlan) {
+      setHarvestForm({
+        week: (rec.week as string) || '',
+        predict_date: rec.predict_date ? parseISO(rec.predict_date as string) : undefined,
+        actual_date: rec.actual_date ? parseISO(rec.actual_date as string) : undefined,
+        harvest_plan: rec.harvest_plan != null ? String(rec.harvest_plan) : '',
+        actual_havest: rec.actual_havest != null ? String(rec.actual_havest) : '',
+        move_to_previous_week: rec.move_to_previous_week != null ? String(rec.move_to_previous_week) : '',
+        postpone_another_week: rec.postpone_another_week != null ? String(rec.postpone_another_week) : '',
+        move_from_previous_week: rec.move_from_previous_week != null ? String(rec.move_from_previous_week) : '',
+        actual_forcing: rec.actual_forcing != null ? String(rec.actual_forcing) : '',
+        out_plan: rec.out_plan != null ? String(rec.out_plan) : '',
+        low_quality: rec.low_quality != null ? String(rec.low_quality) : '',
+        sale_elsewhere: rec.sale_elsewhere != null ? String(rec.sale_elsewhere) : '',
+        est_error: rec.est_error != null ? String(rec.est_error) : '',
+      });
     }
     setEditId(rec.id);
     setDialogOpen(true);
@@ -388,6 +486,7 @@ const Inspections = () => {
   const openCreate = () => { 
     setForm(emptyForm); 
     setAfter60Form(emptyAfter60Form); 
+    setHarvestForm(emptyHarvestPlanForm);
     setEditId(null); 
     setDialogOpen(true); 
   };
