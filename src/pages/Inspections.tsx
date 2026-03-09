@@ -173,6 +173,7 @@ const Inspections = () => {
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
   const isAfter60 = type === 'after_60';
+  const isHarvestPlan = type === 'harvest_plan';
 
   const averageWeight = useMemo(() => {
     const vs = parseFloat(form.sub_small) || 0;
