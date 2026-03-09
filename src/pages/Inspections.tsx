@@ -302,6 +302,15 @@ const Inspections = () => {
         fruiting_row3: after60Form.fruiting_row3 ? parseFloat(after60Form.fruiting_row3) : null,
         'non-fruiting_row3': after60Form.non_fruiting_row3 ? parseFloat(after60Form.non_fruiting_row3) : null,
         total_row3: totalRow3 || null,
+        total_fruiting: totalFruiting || null,
+        'total_non-fruiting': totalNonFruiting || null,
+        total_all: totalAll || null,
+        fruiting_perc: fruitingPerc || null,
+        'non-fruiting_perc': nonFruitingPerc || null,
+        productive_plant: productivePlant || null,
+        est_harvest_date: after60Form.est_harvest_date ? format(after60Form.est_harvest_date, 'yyyy-MM-dd') : null,
+        est_products: estProducts || null,
+        plant_photo: after60Form.plant_photo || null,
       };
 
       if (editId) {
