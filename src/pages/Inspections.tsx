@@ -462,6 +462,22 @@ const Inspections = () => {
         est_harvest_date: rec.est_harvest_date ? parseISO(rec.est_harvest_date as string) : undefined,
         plant_photo: (rec.plant_photo as string) || '',
       });
+    } else if (isHarvestPlan) {
+      setHarvestForm({
+        week: (rec.week as string) || '',
+        predict_date: rec.predict_date ? parseISO(rec.predict_date as string) : undefined,
+        actual_date: rec.actual_date ? parseISO(rec.actual_date as string) : undefined,
+        harvest_plan: rec.harvest_plan != null ? String(rec.harvest_plan) : '',
+        actual_havest: rec.actual_havest != null ? String(rec.actual_havest) : '',
+        move_to_previous_week: rec.move_to_previous_week != null ? String(rec.move_to_previous_week) : '',
+        postpone_another_week: rec.postpone_another_week != null ? String(rec.postpone_another_week) : '',
+        move_from_previous_week: rec.move_from_previous_week != null ? String(rec.move_from_previous_week) : '',
+        actual_forcing: rec.actual_forcing != null ? String(rec.actual_forcing) : '',
+        out_plan: rec.out_plan != null ? String(rec.out_plan) : '',
+        low_quality: rec.low_quality != null ? String(rec.low_quality) : '',
+        sale_elsewhere: rec.sale_elsewhere != null ? String(rec.sale_elsewhere) : '',
+        est_error: rec.est_error != null ? String(rec.est_error) : '',
+      });
     }
     setEditId(rec.id);
     setDialogOpen(true);
@@ -470,6 +486,7 @@ const Inspections = () => {
   const openCreate = () => { 
     setForm(emptyForm); 
     setAfter60Form(emptyAfter60Form); 
+    setHarvestForm(emptyHarvestPlanForm);
     setEditId(null); 
     setDialogOpen(true); 
   };
