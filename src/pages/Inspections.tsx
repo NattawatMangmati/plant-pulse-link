@@ -48,6 +48,21 @@ interface InspectionForm {
   inter_crop: string;
 }
 
+interface After60Form {
+  'M-Y plot': string;
+  m_y_force: string;
+  Area: string;
+  force_plant: string;
+  force_date: Date | undefined;
+  inspection_date: Date | undefined;
+  fruiting_row1: string;
+  'Non-fruiting_row1': string;
+  fruiting_row2: string;
+  non_fruiting_row2: string;
+  fruiting_row3: string;
+  non_fruiting_row3: string;
+}
+
 const emptyForm: InspectionForm = {
   รอบติดตาม: '',
   date: undefined,
@@ -63,10 +78,33 @@ const emptyForm: InspectionForm = {
   inter_crop: '',
 };
 
+const emptyAfter60Form: After60Form = {
+  'M-Y plot': '',
+  m_y_force: '',
+  Area: '',
+  force_plant: '',
+  force_date: undefined,
+  inspection_date: undefined,
+  fruiting_row1: '',
+  'Non-fruiting_row1': '',
+  fruiting_row2: '',
+  non_fruiting_row2: '',
+  fruiting_row3: '',
+  non_fruiting_row3: '',
+};
+
 interface GenericRecord {
   id: string | number;
   created_at: string;
   [key: string]: unknown;
+}
+
+interface PlantationData {
+  "plot's_month": string | null;
+  force_month: string | null;
+  area: number | null;
+  force_plant: number | null;
+  first_force_date: string | null;
 }
 
 const Inspections = () => {
@@ -74,11 +112,14 @@ const Inspections = () => {
   const [records, setRecords] = useState<GenericRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<InspectionForm>(emptyForm);
+  const [after60Form, setAfter60Form] = useState<After60Form>(emptyAfter60Form);
+  const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
+  const isAfter60 = type === 'after_60';
 
   const averageWeight = useMemo(() => {
     const vs = parseFloat(form.sub_small) || 0;
@@ -90,6 +131,55 @@ const Inspections = () => {
     if (total === 0) return 0;
     return Math.round(((vs * 1) + (s * 1.5) + (m * 2) + (l * 2.5) + (vl * 3)) / 100 * 100) / 100;
   }, [form.sub_small, form.small, form.medium, form.large, form.very_large]);
+
+  // Auto-calculated totals for 60days
+  const totalRow1 = useMemo(() => {
+    const f = parseFloat(after60Form.fruiting_row1) || 0;
+    const nf = parseFloat(after60Form['Non-fruiting_row1']) || 0;
+    return f + nf;
+  }, [after60Form.fruiting_row1, after60Form['Non-fruiting_row1']]);
+
+  const totalRow2 = useMemo(() => {
+    const f = parseFloat(after60Form.fruiting_row2) || 0;
+    const nf = parseFloat(after60Form.non_fruiting_row2) || 0;
+    return f + nf;
+  }, [after60Form.fruiting_row2, after60Form.non_fruiting_row2]);
+
+  const totalRow3 = useMemo(() => {
+    const f = parseFloat(after60Form.fruiting_row3) || 0;
+    const nf = parseFloat(after60Form.non_fruiting_row3) || 0;
+    return f + nf;
+  }, [after60Form.fruiting_row3, after60Form.non_fruiting_row3]);
+
+  // Fetch plantation data for auto-fill
+  useEffect(() => {
+    const fetchPlantation = async () => {
+      if (!plantationId) return;
+      const { data, error } = await supabase
+        .from('plantations')
+        .select("\"plot's_month\", force_month, area, force_plant, first_force_date")
+        .eq('id', plantationId)
+        .single();
+      if (!error && data) {
+        setPlantationData(data as PlantationData);
+      }
+    };
+    fetchPlantation();
+  }, [plantationId]);
+
+  // Auto-fill after60Form when plantation data is loaded and dialog opens
+  useEffect(() => {
+    if (plantationData && dialogOpen && !editId && isAfter60) {
+      setAfter60Form(prev => ({
+        ...prev,
+        'M-Y plot': plantationData["plot's_month"] || '',
+        m_y_force: plantationData.force_month || '',
+        Area: plantationData.area != null ? String(plantationData.area) : '',
+        force_plant: plantationData.force_plant != null ? String(plantationData.force_plant) : '',
+        force_date: plantationData.first_force_date ? parseISO(plantationData.first_force_date) : undefined,
+      }));
+    }
+  }, [plantationData, dialogOpen, editId, isAfter60]);
 
   const fetchData = async () => {
     if (!plantationId || !type || !config) return;
@@ -107,6 +197,10 @@ const Inspections = () => {
 
   const updateField = (field: keyof InspectionForm, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateAfter60Field = (field: keyof After60Form, value: any) => {
+    setAfter60Form(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -140,6 +234,36 @@ const Inspections = () => {
         if (error) toast.error(error.message);
         else { toast.success('Created'); setDialogOpen(false); }
       }
+    } else if (isAfter60 && config) {
+      const payload: Record<string, unknown> = {
+        id: editId || crypto.randomUUID(),
+        plantationid: plantationId!,
+        'M-Y plot': after60Form['M-Y plot'] || null,
+        m_y_force: after60Form.m_y_force || null,
+        Area: after60Form.Area ? parseFloat(after60Form.Area) : null,
+        force_plant: after60Form.force_plant ? parseFloat(after60Form.force_plant) : null,
+        force_date: after60Form.force_date ? format(after60Form.force_date, 'yyyy-MM-dd') : null,
+        inspection_date: after60Form.inspection_date ? format(after60Form.inspection_date, 'yyyy-MM-dd') : null,
+        fruiting_row1: after60Form.fruiting_row1 ? parseFloat(after60Form.fruiting_row1) : null,
+        'Non-fruiting_row1': after60Form['Non-fruiting_row1'] ? parseFloat(after60Form['Non-fruiting_row1']) : null,
+        total_row1: totalRow1 || null,
+        fruiting_row2: after60Form.fruiting_row2 ? parseFloat(after60Form.fruiting_row2) : null,
+        'non-fruiting_row2': after60Form.non_fruiting_row2 ? parseFloat(after60Form.non_fruiting_row2) : null,
+        total_row2: totalRow2 || null,
+        fruiting_row3: after60Form.fruiting_row3 ? parseFloat(after60Form.fruiting_row3) : null,
+        'non-fruiting_row3': after60Form.non_fruiting_row3 ? parseFloat(after60Form.non_fruiting_row3) : null,
+        total_row3: totalRow3 || null,
+      };
+
+      if (editId) {
+        const { error } = await supabase.from('60days').update(payload).eq('id', editId as string);
+        if (error) toast.error(error.message);
+        else { toast.success('Updated'); setDialogOpen(false); }
+      } else {
+        const { error } = await supabase.from('60days').insert([payload] as any);
+        if (error) toast.error(error.message);
+        else { toast.success('Created'); setDialogOpen(false); }
+      }
     } else if (config) {
       if (editId) {
         toast.success('Updated');
@@ -152,6 +276,7 @@ const Inspections = () => {
       }
     }
     setForm(emptyForm);
+    setAfter60Form(emptyAfter60Form);
     setEditId(null);
     fetchData();
   };
@@ -180,12 +305,32 @@ const Inspections = () => {
         very_large: rec.very_large != null ? String(rec.very_large) : '',
         inter_crop: (rec.inter_crop as string) || '',
       });
+    } else if (isAfter60) {
+      setAfter60Form({
+        'M-Y plot': (rec['M-Y plot'] as string) || '',
+        m_y_force: (rec.m_y_force as string) || '',
+        Area: rec.Area != null ? String(rec.Area) : '',
+        force_plant: rec.force_plant != null ? String(rec.force_plant) : '',
+        force_date: rec.force_date ? parseISO(rec.force_date as string) : undefined,
+        inspection_date: rec.inspection_date ? parseISO(rec.inspection_date as string) : undefined,
+        fruiting_row1: rec.fruiting_row1 != null ? String(rec.fruiting_row1) : '',
+        'Non-fruiting_row1': rec['Non-fruiting_row1'] != null ? String(rec['Non-fruiting_row1']) : '',
+        fruiting_row2: rec.fruiting_row2 != null ? String(rec.fruiting_row2) : '',
+        non_fruiting_row2: rec['non-fruiting_row2'] != null ? String(rec['non-fruiting_row2']) : '',
+        fruiting_row3: rec.fruiting_row3 != null ? String(rec.fruiting_row3) : '',
+        non_fruiting_row3: rec['non-fruiting_row3'] != null ? String(rec['non-fruiting_row3']) : '',
+      });
     }
     setEditId(rec.id);
     setDialogOpen(true);
   };
 
-  const openCreate = () => { setForm(emptyForm); setEditId(null); setDialogOpen(true); };
+  const openCreate = () => { 
+    setForm(emptyForm); 
+    setAfter60Form(emptyAfter60Form); 
+    setEditId(null); 
+    setDialogOpen(true); 
+  };
 
   return (
     <div className="space-y-6">
@@ -282,6 +427,111 @@ const Inspections = () => {
                     <Input value={averageWeight} readOnly className="bg-muted" />
                   </div>
                 </>
+              ) : isAfter60 ? (
+                <>
+                  {/* 1. Plot's month */}
+                  <div>
+                    <Label>Plot's month (M-Y plot)</Label>
+                    <Input value={after60Form['M-Y plot']} readOnly className="bg-muted" />
+                  </div>
+
+                  {/* 2. Force month */}
+                  <div>
+                    <Label>Force month</Label>
+                    <Input value={after60Form.m_y_force} readOnly className="bg-muted" />
+                  </div>
+
+                  {/* 3. Area */}
+                  <div>
+                    <Label>Area</Label>
+                    <Input value={after60Form.Area} readOnly className="bg-muted" />
+                  </div>
+
+                  {/* 4. Force plant */}
+                  <div>
+                    <Label>Force plant</Label>
+                    <Input value={after60Form.force_plant} readOnly className="bg-muted" />
+                  </div>
+
+                  {/* 5. Force date */}
+                  <div>
+                    <Label>Force date</Label>
+                    <Input value={after60Form.force_date ? format(after60Form.force_date, 'PPP') : ''} readOnly className="bg-muted" />
+                  </div>
+
+                  {/* 6. Inspection date */}
+                  <div>
+                    <Label>Inspection date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !after60Form.inspection_date && "text-muted-foreground")}>
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {after60Form.inspection_date ? format(after60Form.inspection_date, 'PPP') : 'Pick a date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={after60Form.inspection_date} onSelect={d => updateAfter60Field('inspection_date', d)} initialFocus className="p-3 pointer-events-auto" />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Row 1 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 1</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <Label className="text-xs">ต้นที่ออกผล</Label>
+                        <Input type="number" value={after60Form.fruiting_row1} onChange={e => updateAfter60Field('fruiting_row1', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
+                        <Input type="number" value={after60Form['Non-fruiting_row1']} onChange={e => updateAfter60Field('Non-fruiting_row1', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ผลรวม</Label>
+                        <Input value={totalRow1} readOnly className="bg-muted" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 2</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <Label className="text-xs">ต้นที่ออกผล</Label>
+                        <Input type="number" value={after60Form.fruiting_row2} onChange={e => updateAfter60Field('fruiting_row2', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
+                        <Input type="number" value={after60Form.non_fruiting_row2} onChange={e => updateAfter60Field('non_fruiting_row2', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ผลรวม</Label>
+                        <Input value={totalRow2} readOnly className="bg-muted" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 3</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <Label className="text-xs">ต้นที่ออกผล</Label>
+                        <Input type="number" value={after60Form.fruiting_row3} onChange={e => updateAfter60Field('fruiting_row3', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
+                        <Input type="number" value={after60Form.non_fruiting_row3} onChange={e => updateAfter60Field('non_fruiting_row3', e.target.value)} placeholder="0" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">ผลรวม</Label>
+                        <Input value={totalRow3} readOnly className="bg-muted" />
+                      </div>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <p className="text-sm text-muted-foreground">A new record will be created for this plantation.</p>
               )}
@@ -305,13 +555,15 @@ const Inspections = () => {
                     <FileText className="h-4 w-4" />
                     {isInspectionTable && rec.date
                       ? format(parseISO(rec.date as string), 'PPP')
+                      : isAfter60 && rec.inspection_date
+                      ? format(parseISO(rec.inspection_date as string), 'PPP')
                       : format(new Date(rec.created_at), 'PPp')}
                     {isInspectionTable && rec['รอบติดตาม'] && (
                       <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">{rec['รอบติดตาม'] as string}</span>
                     )}
                   </span>
                   <div className="flex gap-1">
-                    {isInspectionTable && (
+                    {(isInspectionTable || isAfter60) && (
                       <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(rec)}>
                         <Edit className="h-3.5 w-3.5" />
                       </Button>
@@ -328,6 +580,15 @@ const Inspections = () => {
                   {rec['โรค'] && <p><span className="text-muted-foreground">โรค:</span> {rec['โรค'] as string}</p>}
                   {rec['การตาย'] && <p><span className="text-muted-foreground">การตาย:</span> {rec['การตาย'] as string}</p>}
                   {rec.average_weight != null && <p><span className="text-muted-foreground">Avg weight:</span> {String(rec.average_weight)} Kg.</p>}
+                </CardContent>
+              )}
+              {isAfter60 && (
+                <CardContent className="text-sm space-y-1">
+                  {rec['M-Y plot'] && <p><span className="text-muted-foreground">Plot's month:</span> {rec['M-Y plot'] as string}</p>}
+                  {rec.Area != null && <p><span className="text-muted-foreground">Area:</span> {String(rec.Area)}</p>}
+                  {rec.total_row1 != null && <p><span className="text-muted-foreground">ผลรวมแถว 1:</span> {String(rec.total_row1)}</p>}
+                  {rec.total_row2 != null && <p><span className="text-muted-foreground">ผลรวมแถว 2:</span> {String(rec.total_row2)}</p>}
+                  {rec.total_row3 != null && <p><span className="text-muted-foreground">ผลรวมแถว 3:</span> {String(rec.total_row3)}</p>}
                 </CardContent>
               )}
             </Card>
