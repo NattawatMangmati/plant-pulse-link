@@ -53,6 +53,9 @@ export interface Plantation {
   "140_days_after_force": string | null;
   inspectorid: string | null;
   "จุก/หน่อ": string | null;
+  photo: string | null;
+  lat: number | null;
+  long: number | null;
   created_at: string;
 }
 
