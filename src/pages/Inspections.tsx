@@ -926,6 +926,16 @@ const Inspections = () => {
                   )}
                 </CardContent>
               )}
+              {isHarvestPlan && (
+                <CardContent className="text-sm space-y-1">
+                  {rec.predict_date && <p><span className="text-muted-foreground">Predict date:</span> {format(parseISO(rec.predict_date as string), 'PPP')}</p>}
+                  {rec.actual_date && <p><span className="text-muted-foreground">Actual date:</span> {format(parseISO(rec.actual_date as string), 'PPP')}</p>}
+                  {rec.harvest_plan != null && <p><span className="text-muted-foreground">แผนการส่ง:</span> {String(rec.harvest_plan)}</p>}
+                  {rec.actual_havest != null && <p><span className="text-muted-foreground">ส่งจริง:</span> {String(rec.actual_havest)}</p>}
+                  {rec.actual_forcing != null && <p><span className="text-muted-foreground">บังคับจริง:</span> {String(rec.actual_forcing)}</p>}
+                  {rec.est_error != null && <p><span className="text-muted-foreground">ประเมิณคลาดเคลื่อน:</span> {String(rec.est_error)}</p>}
+                </CardContent>
+              )}
             </Card>
           ))}
         </div>
