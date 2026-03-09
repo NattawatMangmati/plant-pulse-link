@@ -884,6 +884,8 @@ const Inspections = () => {
                       ? format(parseISO(rec.date as string), 'PPP')
                       : isAfter60 && rec.inspection_date
                       ? format(parseISO(rec.inspection_date as string), 'PPP')
+                      : isHarvestPlan && rec.week
+                      ? (rec.week as string)
                       : format(new Date(rec.created_at), 'PPp')}
                     {isInspectionTable && rec['รอบติดตาม'] && (
                       <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">{rec['รอบติดตาม'] as string}</span>
