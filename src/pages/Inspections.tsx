@@ -65,83 +65,69 @@ interface HarvestPlanForm {
 }
 
 const emptyHarvestPlanForm: HarvestPlanForm = {
-  week: '',
-  predict_date: undefined,
-  actual_date: undefined,
-  harvest_plan: '',
-  actual_havest: '',
-  move_to_previous_week: '',
-  postpone_another_week: '',
-  move_from_previous_week: '',
-  actual_forcing: '',
-  out_plan: '',
-  low_quality: '',
-  sale_elsewhere: '',
-  est_error: '',
+  week: '', predict_date: undefined, actual_date: undefined,
+  harvest_plan: '', actual_havest: '', move_to_previous_week: '',
+  postpone_another_week: '', move_from_previous_week: '', actual_forcing: '',
+  out_plan: '', low_quality: '', sale_elsewhere: '', est_error: '',
 };
 
 interface InspectionForm {
-  รอบติดตาม: string;
-  date: Date | undefined;
-  Environment: string;
-  โรค: string;
-  การตาย: string;
-  previous_weight: string;
-  sub_small: string;
-  small: string;
-  medium: string;
-  large: string;
-  very_large: string;
-  inter_crop: string;
+  รอบติดตาม: string; date: Date | undefined; Environment: string;
+  โรค: string; การตาย: string; previous_weight: string;
+  sub_small: string; small: string; medium: string;
+  large: string; very_large: string; inter_crop: string;
 }
 
 const emptyForm: InspectionForm = {
-  รอบติดตาม: '',
-  date: undefined,
-  Environment: '',
-  โรค: '',
-  การตาย: '',
-  previous_weight: '',
-  sub_small: '',
-  small: '',
-  medium: '',
-  large: '',
-  very_large: '',
-  inter_crop: '',
+  รอบติดตาม: '', date: undefined, Environment: '', โรค: '', การตาย: '',
+  previous_weight: '', sub_small: '', small: '', medium: '',
+  large: '', very_large: '', inter_crop: '',
 };
 
 interface After60Form {
-  'M-Y plot': string;
-  m_y_force: string;
-  Area: string;
-  force_plant: string;
-  force_date: Date | undefined;
-  inspection_date: Date | undefined;
-  fruiting_row1: string;
-  'Non-fruiting_row1': string;
-  fruiting_row2: string;
-  non_fruiting_row2: string;
-  fruiting_row3: string;
-  non_fruiting_row3: string;
-  est_harvest_date: Date | undefined;
-  plant_photo: string;
+  'M-Y plot': string; m_y_force: string; Area: string; force_plant: string;
+  force_date: Date | undefined; inspection_date: Date | undefined;
+  fruiting_row1: string; 'Non-fruiting_row1': string;
+  fruiting_row2: string; non_fruiting_row2: string;
+  fruiting_row3: string; non_fruiting_row3: string;
+  est_harvest_date: Date | undefined; plant_photo: string;
 }
 
 const emptyAfter60Form: After60Form = {
-  'M-Y plot': '',
-  m_y_force: '',
-  Area: '',
-  force_plant: '',
-  force_date: undefined,
-  inspection_date: undefined,
-  fruiting_row1: '',
-  'Non-fruiting_row1': '',
-  fruiting_row2: '',
-  non_fruiting_row2: '',
-  fruiting_row3: '',
-  non_fruiting_row3: '',
-  est_harvest_date: undefined,
-  plant_photo: '',
+  'M-Y plot': '', m_y_force: '', Area: '', force_plant: '',
+  force_date: undefined, inspection_date: undefined,
+  fruiting_row1: '', 'Non-fruiting_row1': '',
+  fruiting_row2: '', non_fruiting_row2: '',
+  fruiting_row3: '', non_fruiting_row3: '',
+  est_harvest_date: undefined, plant_photo: '',
+};
+
+interface After120Form {
+  m_y_plot: string; m_y_force: string; area: string; force_plant: string;
+  force_date: Date | undefined; inspection_date: Date | undefined;
+  large_row1: string; small_row1: string; very_small_row1: string; defect_row1: string; destroyed_row1: string;
+  large_row2: string; small_row2: string; very_small_row2: string; defect_row2: string; destroyed_row2: string;
+  large_row3: string; small_row3: string; very_small_row3: string; defect_row3: string; destroyed_row3: string;
+  nitrate_row1_no1: string; nitrate_row1_no2: string; nitrate_row1_no3: string;
+  nitrate_row2_no1: string; nitrate_row2_no2: string; nitrate_row2_no3: string;
+  nitrate_row3_no1: string; nitrate_row3_no2: string; nitrate_row3_no3: string;
+  large_weight: string; small_weight: string; very_small_weight: string;
+  first_prediction_product: string;
+  photo: string;
+}
+
+const emptyAfter120Form: After120Form = {
+  m_y_plot: '', m_y_force: '', area: '', force_plant: '',
+  force_date: undefined, inspection_date: undefined,
+  large_row1: '', small_row1: '', very_small_row1: '', defect_row1: '', destroyed_row1: '',
+  large_row2: '', small_row2: '', very_small_row2: '', defect_row2: '', destroyed_row2: '',
+  large_row3: '', small_row3: '', very_small_row3: '', defect_row3: '', destroyed_row3: '',
+  nitrate_row1_no1: '', nitrate_row1_no2: '', nitrate_row1_no3: '',
+  nitrate_row2_no1: '', nitrate_row2_no2: '', nitrate_row2_no3: '',
+  nitrate_row3_no1: '', nitrate_row3_no2: '', nitrate_row3_no3: '',
+  large_weight: '1', small_weight: '0.7', very_small_weight: '0.3',
+  first_prediction_product: '',
+  photo: '',
 };
 
 interface GenericRecord {
@@ -156,6 +142,7 @@ interface PlantationData {
   area: number | null;
   force_plant: number | null;
   "60_days_after_force": string | null;
+  "120_days_after_force": string | null;
 }
 
 const Inspections = () => {
@@ -164,17 +151,21 @@ const Inspections = () => {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<InspectionForm>(emptyForm);
   const [after60Form, setAfter60Form] = useState<After60Form>(emptyAfter60Form);
+  const [after120Form, setAfter120Form] = useState<After120Form>(emptyAfter120Form);
   const [harvestForm, setHarvestForm] = useState<HarvestPlanForm>(emptyHarvestPlanForm);
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [uploading60Photo, setUploading60Photo] = useState(false);
+  const [uploading120Photo, setUploading120Photo] = useState(false);
 
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
   const isAfter60 = type === 'after_60';
+  const isAfter120 = type === 'after_120';
   const isHarvestPlan = type === 'harvest_plan';
 
+  // ===== Inspection auto-calc =====
   const averageWeight = useMemo(() => {
     const vs = parseFloat(form.sub_small) || 0;
     const s = parseFloat(form.small) || 0;
@@ -186,63 +177,66 @@ const Inspections = () => {
     return Math.round(((vs * 1) + (s * 1.5) + (m * 2) + (l * 2.5) + (vl * 3)) / 100 * 100) / 100;
   }, [form.sub_small, form.small, form.medium, form.large, form.very_large]);
 
-  // Auto-calculated totals for 60days
-  const totalRow1 = useMemo(() => {
-    const f = parseFloat(after60Form.fruiting_row1) || 0;
-    const nf = parseFloat(after60Form['Non-fruiting_row1']) || 0;
-    return f + nf;
-  }, [after60Form.fruiting_row1, after60Form['Non-fruiting_row1']]);
+  // ===== After 60 auto-calc =====
+  const totalRow1_60 = useMemo(() => (parseFloat(after60Form.fruiting_row1) || 0) + (parseFloat(after60Form['Non-fruiting_row1']) || 0), [after60Form.fruiting_row1, after60Form['Non-fruiting_row1']]);
+  const totalRow2_60 = useMemo(() => (parseFloat(after60Form.fruiting_row2) || 0) + (parseFloat(after60Form.non_fruiting_row2) || 0), [after60Form.fruiting_row2, after60Form.non_fruiting_row2]);
+  const totalRow3_60 = useMemo(() => (parseFloat(after60Form.fruiting_row3) || 0) + (parseFloat(after60Form.non_fruiting_row3) || 0), [after60Form.fruiting_row3, after60Form.non_fruiting_row3]);
+  const totalFruiting = useMemo(() => (parseFloat(after60Form.fruiting_row1) || 0) + (parseFloat(after60Form.fruiting_row2) || 0) + (parseFloat(after60Form.fruiting_row3) || 0), [after60Form.fruiting_row1, after60Form.fruiting_row2, after60Form.fruiting_row3]);
+  const totalNonFruiting = useMemo(() => (parseFloat(after60Form['Non-fruiting_row1']) || 0) + (parseFloat(after60Form.non_fruiting_row2) || 0) + (parseFloat(after60Form.non_fruiting_row3) || 0), [after60Form['Non-fruiting_row1'], after60Form.non_fruiting_row2, after60Form.non_fruiting_row3]);
+  const totalAll_60 = totalRow1_60 + totalRow2_60 + totalRow3_60;
+  const fruitingPerc = useMemo(() => totalAll_60 === 0 ? 0 : Math.round((totalFruiting / totalAll_60) * 100 * 100) / 100, [totalFruiting, totalAll_60]);
+  const nonFruitingPerc = useMemo(() => totalAll_60 === 0 ? 0 : Math.round((totalNonFruiting / totalAll_60) * 100 * 100) / 100, [totalNonFruiting, totalAll_60]);
+  const productivePlant = useMemo(() => Math.round((fruitingPerc * (parseFloat(after60Form.force_plant) || 0)) / 100), [fruitingPerc, after60Form.force_plant]);
+  const estProducts = useMemo(() => Math.round((totalFruiting * (parseFloat(after60Form.force_plant) || 0)) * 100 * 100) / 100, [totalFruiting, after60Form.force_plant]);
 
-  const totalRow2 = useMemo(() => {
-    const f = parseFloat(after60Form.fruiting_row2) || 0;
-    const nf = parseFloat(after60Form.non_fruiting_row2) || 0;
-    return f + nf;
-  }, [after60Form.fruiting_row2, after60Form.non_fruiting_row2]);
+  // ===== After 120 auto-calc =====
+  const p = (v: string) => parseFloat(v) || 0;
+  
+  const totalRow1_120 = useMemo(() => p(after120Form.large_row1) + p(after120Form.small_row1) + p(after120Form.very_small_row1) + p(after120Form.defect_row1) + p(after120Form.destroyed_row1), [after120Form.large_row1, after120Form.small_row1, after120Form.very_small_row1, after120Form.defect_row1, after120Form.destroyed_row1]);
+  const totalRow2_120 = useMemo(() => p(after120Form.large_row2) + p(after120Form.small_row2) + p(after120Form.very_small_row2) + p(after120Form.defect_row2) + p(after120Form.destroyed_row2), [after120Form.large_row2, after120Form.small_row2, after120Form.very_small_row2, after120Form.defect_row2, after120Form.destroyed_row2]);
+  const totalRow3_120 = useMemo(() => p(after120Form.large_row3) + p(after120Form.small_row3) + p(after120Form.very_small_row3) + p(after120Form.defect_row3) + p(after120Form.destroyed_row3), [after120Form.large_row3, after120Form.small_row3, after120Form.very_small_row3, after120Form.defect_row3, after120Form.destroyed_row3]);
 
-  const totalRow3 = useMemo(() => {
-    const f = parseFloat(after60Form.fruiting_row3) || 0;
-    const nf = parseFloat(after60Form.non_fruiting_row3) || 0;
-    return f + nf;
-  }, [after60Form.fruiting_row3, after60Form.non_fruiting_row3]);
+  const avgNitrateRow1 = useMemo(() => { const vals = [p(after120Form.nitrate_row1_no1), p(after120Form.nitrate_row1_no2), p(after120Form.nitrate_row1_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row1_no1, after120Form.nitrate_row1_no2, after120Form.nitrate_row1_no3]);
+  const avgNitrateRow2 = useMemo(() => { const vals = [p(after120Form.nitrate_row2_no1), p(after120Form.nitrate_row2_no2), p(after120Form.nitrate_row2_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row2_no1, after120Form.nitrate_row2_no2, after120Form.nitrate_row2_no3]);
+  const avgNitrateRow3 = useMemo(() => { const vals = [p(after120Form.nitrate_row3_no1), p(after120Form.nitrate_row3_no2), p(after120Form.nitrate_row3_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row3_no1, after120Form.nitrate_row3_no2, after120Form.nitrate_row3_no3]);
 
-  // Fields 16-21, 23: auto-calculated
-  const totalFruiting = useMemo(() => {
-    return (parseFloat(after60Form.fruiting_row1) || 0) + (parseFloat(after60Form.fruiting_row2) || 0) + (parseFloat(after60Form.fruiting_row3) || 0);
-  }, [after60Form.fruiting_row1, after60Form.fruiting_row2, after60Form.fruiting_row3]);
+  const avgNitrateNo1 = useMemo(() => { const vals = [p(after120Form.nitrate_row1_no1), p(after120Form.nitrate_row2_no1), p(after120Form.nitrate_row3_no1)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row1_no1, after120Form.nitrate_row2_no1, after120Form.nitrate_row3_no1]);
+  const avgNitrateNo2 = useMemo(() => { const vals = [p(after120Form.nitrate_row1_no2), p(after120Form.nitrate_row2_no2), p(after120Form.nitrate_row3_no2)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row1_no2, after120Form.nitrate_row2_no2, after120Form.nitrate_row3_no2]);
+  const avgNitrateNo3 = useMemo(() => { const vals = [p(after120Form.nitrate_row1_no3), p(after120Form.nitrate_row2_no3), p(after120Form.nitrate_row3_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after120Form.nitrate_row1_no3, after120Form.nitrate_row2_no3, after120Form.nitrate_row3_no3]);
 
-  const totalNonFruiting = useMemo(() => {
-    return (parseFloat(after60Form['Non-fruiting_row1']) || 0) + (parseFloat(after60Form.non_fruiting_row2) || 0) + (parseFloat(after60Form.non_fruiting_row3) || 0);
-  }, [after60Form['Non-fruiting_row1'], after60Form.non_fruiting_row2, after60Form.non_fruiting_row3]);
+  const avgTotalNitrate = useMemo(() => (avgNitrateRow1 + avgNitrateRow2 + avgNitrateRow3) > 0 ? Math.round((avgNitrateRow1 + avgNitrateRow2 + avgNitrateRow3) / 3 * 100) / 100 : 0, [avgNitrateRow1, avgNitrateRow2, avgNitrateRow3]);
 
-  const totalAll = totalRow1 + totalRow2 + totalRow3;
+  const totalLarge = useMemo(() => p(after120Form.large_row1) + p(after120Form.large_row2) + p(after120Form.large_row3), [after120Form.large_row1, after120Form.large_row2, after120Form.large_row3]);
+  const totalSmall = useMemo(() => p(after120Form.small_row1) + p(after120Form.small_row2) + p(after120Form.small_row3), [after120Form.small_row1, after120Form.small_row2, after120Form.small_row3]);
+  const totalVerySmall = useMemo(() => p(after120Form.very_small_row1) + p(after120Form.very_small_row2) + p(after120Form.very_small_row3), [after120Form.very_small_row1, after120Form.very_small_row2, after120Form.very_small_row3]);
+  const totalDefect = useMemo(() => p(after120Form.defect_row1) + p(after120Form.defect_row2) + p(after120Form.defect_row3), [after120Form.defect_row1, after120Form.defect_row2, after120Form.defect_row3]);
+  const totalDestroyed = useMemo(() => p(after120Form.destroyed_row1) + p(after120Form.destroyed_row2) + p(after120Form.destroyed_row3), [after120Form.destroyed_row1, after120Form.destroyed_row2, after120Form.destroyed_row3]);
+  const totalAll_120 = totalRow1_120 + totalRow2_120 + totalRow3_120;
+  const goodProducts = totalAll_120 - (totalDefect + totalDestroyed);
+  const largePerc = goodProducts > 0 ? Math.round((totalLarge / goodProducts) * 100 * 100) / 100 : 0;
+  const smallPerc = goodProducts > 0 ? Math.round((totalSmall / goodProducts) * 100 * 100) / 100 : 0;
+  const verySmallPerc = goodProducts > 0 ? Math.round((totalVerySmall / goodProducts) * 100 * 100) / 100 : 0;
+  const defectPerc = totalAll_120 > 0 ? Math.round((totalDefect / totalAll_120) * 100 * 100) / 100 : 0;
+  const destroyedPerc = totalAll_120 > 0 ? Math.round((totalDestroyed / totalAll_120) * 100 * 100) / 100 : 0;
+  const normalPerc = totalAll_120 > 0 ? Math.round((goodProducts / totalAll_120) * 100 * 100) / 100 : 0;
 
-  const fruitingPerc = useMemo(() => {
-    if (totalAll === 0) return 0;
-    return Math.round((totalFruiting / totalAll) * 100 * 100) / 100;
-  }, [totalFruiting, totalAll]);
+  const largeW = p(after120Form.large_weight) || 1;
+  const smallW = p(after120Form.small_weight) || 0.7;
+  const verySmallW = p(after120Form.very_small_weight) || 0.3;
+  const firstPred = p(after120Form.first_prediction_product);
+  const predictionProductKg = useMemo(() => {
+    const normalFrac = normalPerc / 100;
+    const largeFrac = largePerc / 100;
+    const smallFrac = smallPerc / 100;
+    const vsFrac = verySmallPerc / 100;
+    return Math.round(((largeFrac * (firstPred * normalFrac)) * largeW + (smallFrac * (firstPred * normalFrac)) * smallW + (vsFrac * (firstPred * normalFrac)) * verySmallW) * 100) / 100;
+  }, [largePerc, smallPerc, verySmallPerc, normalPerc, firstPred, largeW, smallW, verySmallW]);
 
-  const nonFruitingPerc = useMemo(() => {
-    if (totalAll === 0) return 0;
-    return Math.round((totalNonFruiting / totalAll) * 100 * 100) / 100;
-  }, [totalNonFruiting, totalAll]);
-
-  const productivePlant = useMemo(() => {
-    const fp = parseFloat(after60Form.force_plant) || 0;
-    return Math.round((fruitingPerc * fp) / 100);
-  }, [fruitingPerc, after60Form.force_plant]);
-
-  const estProducts = useMemo(() => {
-    const fp = parseFloat(after60Form.force_plant) || 0;
-    return Math.round((totalFruiting * fp) * 100 * 100) / 100;
-  }, [totalFruiting, after60Form.force_plant]);
-
-  // Photo upload for 60days
+  // ===== Photo uploads =====
   const handle60PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]; if (!file) return;
     setUploading60Photo(true);
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${plantationId}/${Date.now()}.${fileExt}`;
+    const filePath = `${plantationId}/${Date.now()}.${file.name.split('.').pop()}`;
     const { error } = await supabase.storage.from('60D photo').upload(filePath, file);
     if (error) { toast.error(error.message); setUploading60Photo(false); return; }
     const { data: urlData } = supabase.storage.from('60D photo').getPublicUrl(filePath);
@@ -250,22 +244,32 @@ const Inspections = () => {
     setUploading60Photo(false);
   };
 
+  const handle120PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setUploading120Photo(true);
+    const filePath = `${plantationId}/${Date.now()}.${file.name.split('.').pop()}`;
+    const { error } = await supabase.storage.from('120D photo').upload(filePath, file);
+    if (error) { toast.error(error.message); setUploading120Photo(false); return; }
+    const { data: urlData } = supabase.storage.from('120D photo').getPublicUrl(filePath);
+    updateAfter120Field('photo', urlData.publicUrl);
+    setUploading120Photo(false);
+  };
+
+  // ===== Fetch plantation data =====
   useEffect(() => {
     const fetchPlantation = async () => {
       if (!plantationId) return;
       const { data, error } = await supabase
         .from('plantations')
-        .select("\"plot's_month\", force_month, area, force_plant, \"60_days_after_force\"")
+        .select("\"plot's_month\", force_month, area, force_plant, \"60_days_after_force\", \"120_days_after_force\"")
         .eq('id', plantationId)
         .single();
-      if (!error && data) {
-        setPlantationData(data as PlantationData);
-      }
+      if (!error && data) setPlantationData(data as PlantationData);
     };
     fetchPlantation();
   }, [plantationId]);
 
-  // Auto-fill after60Form when plantation data is loaded and dialog opens
+  // Auto-fill after60Form
   useEffect(() => {
     if (plantationData && dialogOpen && !editId && isAfter60) {
       setAfter60Form(prev => ({
@@ -278,6 +282,34 @@ const Inspections = () => {
       }));
     }
   }, [plantationData, dialogOpen, editId, isAfter60]);
+
+  // Auto-fill after120Form + fetch est_products from 60days
+  useEffect(() => {
+    if (plantationData && dialogOpen && !editId && isAfter120) {
+      setAfter120Form(prev => ({
+        ...prev,
+        m_y_plot: plantationData["plot's_month"] || '',
+        m_y_force: plantationData.force_month || '',
+        area: plantationData.area != null ? String(plantationData.area) : '',
+        force_plant: plantationData.force_plant != null ? String(plantationData.force_plant) : '',
+        force_date: plantationData["120_days_after_force"] ? parseISO(plantationData["120_days_after_force"]) : undefined,
+      }));
+      // Fetch est_products from 60days for first_prediction_product
+      const fetch60 = async () => {
+        const { data } = await supabase
+          .from('60days')
+          .select('est_products')
+          .eq('plantationid', plantationId!)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+        if (data?.est_products != null) {
+          setAfter120Form(prev => ({ ...prev, first_prediction_product: String(data.est_products) }));
+        }
+      };
+      fetch60();
+    }
+  }, [plantationData, dialogOpen, editId, isAfter120, plantationId]);
 
   const fetchData = async () => {
     if (!plantationId || !type || !config) return;
@@ -293,92 +325,117 @@ const Inspections = () => {
 
   useEffect(() => { fetchData(); }, [plantationId, type]);
 
-  const updateField = (field: keyof InspectionForm, value: any) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-  };
-
-  const updateAfter60Field = (field: keyof After60Form, value: any) => {
-    setAfter60Form(prev => ({ ...prev, [field]: value }));
-  };
-
-  const updateHarvestField = (field: keyof HarvestPlanForm, value: any) => {
-    setHarvestForm(prev => ({ ...prev, [field]: value }));
-  };
+  const updateField = (field: keyof InspectionForm, value: any) => setForm(prev => ({ ...prev, [field]: value }));
+  const updateAfter60Field = (field: keyof After60Form, value: any) => setAfter60Form(prev => ({ ...prev, [field]: value }));
+  const updateAfter120Field = (field: keyof After120Form, value: any) => setAfter120Form(prev => ({ ...prev, [field]: value }));
+  const updateHarvestField = (field: keyof HarvestPlanForm, value: any) => setHarvestForm(prev => ({ ...prev, [field]: value }));
 
   const handleSave = async () => {
     if (isInspectionTable) {
       if (!form.รอบติดตาม) { toast.error('กรุณาเลือกรอบติดตาม'); return; }
       if (!form.date) { toast.error('กรุณาเลือกวันที่'); return; }
-
       const payload: Record<string, unknown> = {
         plantation_id: plantationId!,
         รอบติดตาม: form.รอบติดตาม,
         date: format(form.date, 'yyyy-MM-dd'),
         Environment: form.Environment || null,
-        โรค: form.โรค || null,
-        การตาย: form.การตาย || null,
+        โรค: form.โรค || null, การตาย: form.การตาย || null,
         previous_weight: form.previous_weight ? parseFloat(form.previous_weight) : null,
         sub_small: form.sub_small ? parseFloat(form.sub_small) : null,
         small: form.small ? parseFloat(form.small) : null,
         medium: form.medium ? parseFloat(form.medium) : null,
         large: form.large ? parseFloat(form.large) : null,
         very_large: form.very_large ? parseFloat(form.very_large) : null,
-        average_weight: averageWeight || null,
-        inter_crop: form.inter_crop || null,
+        average_weight: averageWeight || null, inter_crop: form.inter_crop || null,
       };
-
       if (editId) {
         const { error } = await supabase.from('inspections').update(payload).eq('id', editId as string);
-        if (error) toast.error(error.message);
-        else { toast.success('Updated'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Updated'); setDialogOpen(false); }
       } else {
         const { error } = await supabase.from('inspections').insert([payload] as any);
-        if (error) toast.error(error.message);
-        else { toast.success('Created'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
       }
     } else if (isAfter60 && config) {
       const payload: Record<string, unknown> = {
-        id: editId || crypto.randomUUID(),
-        plantationid: plantationId!,
-        'M-Y plot': after60Form['M-Y plot'] || null,
-        m_y_force: after60Form.m_y_force || null,
+        id: editId || crypto.randomUUID(), plantationid: plantationId!,
+        'M-Y plot': after60Form['M-Y plot'] || null, m_y_force: after60Form.m_y_force || null,
         Area: after60Form.Area ? parseFloat(after60Form.Area) : null,
         force_plant: after60Form.force_plant ? parseFloat(after60Form.force_plant) : null,
         force_date: after60Form.force_date ? format(after60Form.force_date, 'yyyy-MM-dd') : null,
         inspection_date: after60Form.inspection_date ? format(after60Form.inspection_date, 'yyyy-MM-dd') : null,
         fruiting_row1: after60Form.fruiting_row1 ? parseFloat(after60Form.fruiting_row1) : null,
         'Non-fruiting_row1': after60Form['Non-fruiting_row1'] ? parseFloat(after60Form['Non-fruiting_row1']) : null,
-        total_row1: totalRow1 || null,
+        total_row1: totalRow1_60 || null,
         fruiting_row2: after60Form.fruiting_row2 ? parseFloat(after60Form.fruiting_row2) : null,
         'non-fruiting_row2': after60Form.non_fruiting_row2 ? parseFloat(after60Form.non_fruiting_row2) : null,
-        total_row2: totalRow2 || null,
+        total_row2: totalRow2_60 || null,
         fruiting_row3: after60Form.fruiting_row3 ? parseFloat(after60Form.fruiting_row3) : null,
         'non-fruiting_row3': after60Form.non_fruiting_row3 ? parseFloat(after60Form.non_fruiting_row3) : null,
-        total_row3: totalRow3 || null,
+        total_row3: totalRow3_60 || null,
         total_fruiting: totalFruiting || null,
         'total_non-fruiting': totalNonFruiting || null,
-        total_all: totalAll || null,
-        fruiting_perc: fruitingPerc || null,
-        'non-fruiting_perc': nonFruitingPerc || null,
+        total_all: totalAll_60 || null,
+        fruiting_perc: fruitingPerc || null, 'non-fruiting_perc': nonFruitingPerc || null,
         productive_plant: productivePlant || null,
         est_harvest_date: after60Form.est_harvest_date ? format(after60Form.est_harvest_date, 'yyyy-MM-dd') : null,
-        est_products: estProducts || null,
-        plant_photo: after60Form.plant_photo || null,
+        est_products: estProducts || null, plant_photo: after60Form.plant_photo || null,
       };
-
       if (editId) {
         const { error } = await supabase.from('60days').update(payload).eq('id', editId as string);
-        if (error) toast.error(error.message);
-        else { toast.success('Updated'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Updated'); setDialogOpen(false); }
       } else {
         const { error } = await supabase.from('60days').insert([payload] as any);
-        if (error) toast.error(error.message);
-        else { toast.success('Created'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
+      }
+    } else if (isAfter120 && config) {
+      const payload: Record<string, unknown> = {
+        id: editId || crypto.randomUUID(), platationid: plantationId!,
+        m_y_plot: after120Form.m_y_plot || null, m_y_force: after120Form.m_y_force || null,
+        area: after120Form.area ? parseFloat(after120Form.area) : null,
+        force_plant: after120Form.force_plant ? parseFloat(after120Form.force_plant) : null,
+        force_date: after120Form.force_date ? format(after120Form.force_date, 'yyyy-MM-dd') : null,
+        inspection_date: after120Form.inspection_date ? format(after120Form.inspection_date, 'yyyy-MM-dd') : null,
+        large_row1: p(after120Form.large_row1) || null, small_row1: p(after120Form.small_row1) || null,
+        very_small_row1: p(after120Form.very_small_row1) || null, defect_row1: p(after120Form.defect_row1) || null,
+        destroyed_row1: p(after120Form.destroyed_row1) || null, total_row1: totalRow1_120 || null,
+        large_row2: p(after120Form.large_row2) || null, small_row2: p(after120Form.small_row2) || null,
+        very_small_row2: p(after120Form.very_small_row2) || null, defect_row2: p(after120Form.defect_row2) || null,
+        destroyed_row2: p(after120Form.destroyed_row2) || null, total_row2: totalRow2_120 || null,
+        large_row3: p(after120Form.large_row3) || null, small_row3: p(after120Form.small_row3) || null,
+        very_small_row3: p(after120Form.very_small_row3) || null, defect_row3: p(after120Form.defect_row3) || null,
+        destroyed_row3: p(after120Form.destroyed_row3) || null, total_row3: totalRow3_120 || null,
+        nitrate_row1_no1: p(after120Form.nitrate_row1_no1) || null, nitrate_row1_no2: p(after120Form.nitrate_row1_no2) || null,
+        nitrate_row1_no3: p(after120Form.nitrate_row1_no3) || null, avg_nitrate_row1: avgNitrateRow1 || null,
+        nitrate_row2_no1: p(after120Form.nitrate_row2_no1) || null, nitrate_row2_no2: p(after120Form.nitrate_row2_no2) || null,
+        nitrate_row2_no3: p(after120Form.nitrate_row2_no3) || null, avg_nitrate_row2: avgNitrateRow2 || null,
+        nitrate_row3_no1: p(after120Form.nitrate_row3_no1) || null, nitrate_row3_no2: p(after120Form.nitrate_row3_no2) || null,
+        nitrate_row3_no3: p(after120Form.nitrate_row3_no3) || null, avg_nitrate_row3: avgNitrateRow3 || null,
+        avg_nitrate_no1: avgNitrateNo1 || null, avg_nitrate_no2: avgNitrateNo2 || null,
+        avg_nitrate_no3: avgNitrateNo3 || null, avg_total_nitrate: avgTotalNitrate || null,
+        total_large: totalLarge || null, total_small: totalSmall || null,
+        total_very_small: totalVerySmall || null, total_defect: totalDefect || null,
+        total_destroyed: totalDestroyed || null, total_all: totalAll_120 || null,
+        large_perc: largePerc || null, small_perc: smallPerc || null,
+        very_small_perc: verySmallPerc || null, defect_perc: defectPerc || null,
+        destroyed_perc: destroyedPerc || null, normal_perc: normalPerc || null,
+        good_products: goodProducts || null,
+        large_weight: p(after120Form.large_weight) || 1,
+        small_weight: p(after120Form.small_weight) || 0.7,
+        very_small_weight: p(after120Form.very_small_weight) || 0.3,
+        first_prediction_product: p(after120Form.first_prediction_product) || null,
+        prediction_product_kg: predictionProductKg || null,
+        photo: after120Form.photo || null,
+      };
+      if (editId) {
+        const { error } = await supabase.from('120days').update(payload).eq('id', editId as string);
+        if (error) toast.error(error.message); else { toast.success('Updated'); setDialogOpen(false); }
+      } else {
+        const { error } = await supabase.from('120days').insert([payload] as any);
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
       }
     } else if (isHarvestPlan && config) {
       const payload: Record<string, unknown> = {
-        id: editId || crypto.randomUUID(),
-        plantationid: plantationId!,
+        id: editId || crypto.randomUUID(), plantationid: plantationId!,
         week: harvestForm.week || null,
         predict_date: harvestForm.predict_date ? format(harvestForm.predict_date, 'yyyy-MM-dd') : null,
         actual_date: harvestForm.actual_date ? format(harvestForm.actual_date, 'yyyy-MM-dd') : null,
@@ -393,64 +450,46 @@ const Inspections = () => {
         sale_elsewhere: harvestForm.sale_elsewhere ? parseFloat(harvestForm.sale_elsewhere) : null,
         est_error: harvestForm.est_error ? parseFloat(harvestForm.est_error) : null,
       };
-
       if (editId) {
         const { error } = await supabase.from('harvest_plan').update(payload).eq('id', editId as string);
-        if (error) toast.error(error.message);
-        else { toast.success('Updated'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Updated'); setDialogOpen(false); }
       } else {
         const { error } = await supabase.from('harvest_plan').insert([payload] as any);
-        if (error) toast.error(error.message);
-        else { toast.success('Created'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
       }
     } else if (config) {
-      if (editId) {
-        toast.success('Updated');
-        setDialogOpen(false);
-      } else {
+      if (editId) { toast.success('Updated'); setDialogOpen(false); }
+      else {
         const insertData: Record<string, unknown> = { [config.plantationCol]: plantationId };
         const { error } = await supabase.from(config.table as any).insert([insertData] as any);
-        if (error) toast.error(error.message);
-        else { toast.success('Created'); setDialogOpen(false); }
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
       }
     }
-    setForm(emptyForm);
-    setAfter60Form(emptyAfter60Form);
-    setHarvestForm(emptyHarvestPlanForm);
-    setEditId(null);
-    fetchData();
+    setForm(emptyForm); setAfter60Form(emptyAfter60Form); setAfter120Form(emptyAfter120Form);
+    setHarvestForm(emptyHarvestPlanForm); setEditId(null); fetchData();
   };
 
   const handleDelete = async (id: string | number) => {
     if (!confirm('Delete this record?')) return;
     if (!config) return;
     const { error } = await supabase.from(config.table as any).delete().eq('id', id);
-    if (error) toast.error(error.message);
-    else { toast.success('Deleted'); fetchData(); }
+    if (error) toast.error(error.message); else { toast.success('Deleted'); fetchData(); }
   };
 
   const openEdit = (rec: GenericRecord) => {
     if (isInspectionTable) {
       setForm({
-        รอบติดตาม: (rec['รอบติดตาม'] as string) || '',
-        date: rec.date ? parseISO(rec.date as string) : undefined,
-        Environment: (rec.Environment as string) || '',
-        โรค: (rec['โรค'] as string) || '',
-        การตาย: (rec['การตาย'] as string) || '',
-        previous_weight: rec.previous_weight != null ? String(rec.previous_weight) : '',
-        sub_small: rec.sub_small != null ? String(rec.sub_small) : '',
-        small: rec.small != null ? String(rec.small) : '',
-        medium: rec.medium != null ? String(rec.medium) : '',
-        large: rec.large != null ? String(rec.large) : '',
-        very_large: rec.very_large != null ? String(rec.very_large) : '',
-        inter_crop: (rec.inter_crop as string) || '',
+        รอบติดตาม: (rec['รอบติดตาม'] as string) || '', date: rec.date ? parseISO(rec.date as string) : undefined,
+        Environment: (rec.Environment as string) || '', โรค: (rec['โรค'] as string) || '',
+        การตาย: (rec['การตาย'] as string) || '', previous_weight: rec.previous_weight != null ? String(rec.previous_weight) : '',
+        sub_small: rec.sub_small != null ? String(rec.sub_small) : '', small: rec.small != null ? String(rec.small) : '',
+        medium: rec.medium != null ? String(rec.medium) : '', large: rec.large != null ? String(rec.large) : '',
+        very_large: rec.very_large != null ? String(rec.very_large) : '', inter_crop: (rec.inter_crop as string) || '',
       });
     } else if (isAfter60) {
       setAfter60Form({
-        'M-Y plot': (rec['M-Y plot'] as string) || '',
-        m_y_force: (rec.m_y_force as string) || '',
-        Area: rec.Area != null ? String(rec.Area) : '',
-        force_plant: rec.force_plant != null ? String(rec.force_plant) : '',
+        'M-Y plot': (rec['M-Y plot'] as string) || '', m_y_force: (rec.m_y_force as string) || '',
+        Area: rec.Area != null ? String(rec.Area) : '', force_plant: rec.force_plant != null ? String(rec.force_plant) : '',
         force_date: rec.force_date ? parseISO(rec.force_date as string) : undefined,
         inspection_date: rec.inspection_date ? parseISO(rec.inspection_date as string) : undefined,
         fruiting_row1: rec.fruiting_row1 != null ? String(rec.fruiting_row1) : '',
@@ -461,6 +500,36 @@ const Inspections = () => {
         non_fruiting_row3: rec['non-fruiting_row3'] != null ? String(rec['non-fruiting_row3']) : '',
         est_harvest_date: rec.est_harvest_date ? parseISO(rec.est_harvest_date as string) : undefined,
         plant_photo: (rec.plant_photo as string) || '',
+      });
+    } else if (isAfter120) {
+      setAfter120Form({
+        m_y_plot: (rec.m_y_plot as string) || '', m_y_force: (rec.m_y_force as string) || '',
+        area: rec.area != null ? String(rec.area) : '', force_plant: rec.force_plant != null ? String(rec.force_plant) : '',
+        force_date: rec.force_date ? parseISO(rec.force_date as string) : undefined,
+        inspection_date: rec.inspection_date ? parseISO(rec.inspection_date as string) : undefined,
+        large_row1: rec.large_row1 != null ? String(rec.large_row1) : '', small_row1: rec.small_row1 != null ? String(rec.small_row1) : '',
+        very_small_row1: rec.very_small_row1 != null ? String(rec.very_small_row1) : '', defect_row1: rec.defect_row1 != null ? String(rec.defect_row1) : '',
+        destroyed_row1: rec.destroyed_row1 != null ? String(rec.destroyed_row1) : '',
+        large_row2: rec.large_row2 != null ? String(rec.large_row2) : '', small_row2: rec.small_row2 != null ? String(rec.small_row2) : '',
+        very_small_row2: rec.very_small_row2 != null ? String(rec.very_small_row2) : '', defect_row2: rec.defect_row2 != null ? String(rec.defect_row2) : '',
+        destroyed_row2: rec.destroyed_row2 != null ? String(rec.destroyed_row2) : '',
+        large_row3: rec.large_row3 != null ? String(rec.large_row3) : '', small_row3: rec.small_row3 != null ? String(rec.small_row3) : '',
+        very_small_row3: rec.very_small_row3 != null ? String(rec.very_small_row3) : '', defect_row3: rec.defect_row3 != null ? String(rec.defect_row3) : '',
+        destroyed_row3: rec.destroyed_row3 != null ? String(rec.destroyed_row3) : '',
+        nitrate_row1_no1: rec.nitrate_row1_no1 != null ? String(rec.nitrate_row1_no1) : '',
+        nitrate_row1_no2: rec.nitrate_row1_no2 != null ? String(rec.nitrate_row1_no2) : '',
+        nitrate_row1_no3: rec.nitrate_row1_no3 != null ? String(rec.nitrate_row1_no3) : '',
+        nitrate_row2_no1: rec.nitrate_row2_no1 != null ? String(rec.nitrate_row2_no1) : '',
+        nitrate_row2_no2: rec.nitrate_row2_no2 != null ? String(rec.nitrate_row2_no2) : '',
+        nitrate_row2_no3: rec.nitrate_row2_no3 != null ? String(rec.nitrate_row2_no3) : '',
+        nitrate_row3_no1: rec.nitrate_row3_no1 != null ? String(rec.nitrate_row3_no1) : '',
+        nitrate_row3_no2: rec.nitrate_row3_no2 != null ? String(rec.nitrate_row3_no2) : '',
+        nitrate_row3_no3: rec.nitrate_row3_no3 != null ? String(rec.nitrate_row3_no3) : '',
+        large_weight: rec.large_weight != null ? String(rec.large_weight) : '1',
+        small_weight: rec.small_weight != null ? String(rec.small_weight) : '0.7',
+        very_small_weight: rec.very_small_weight != null ? String(rec.very_small_weight) : '0.3',
+        first_prediction_product: rec.first_prediction_product != null ? String(rec.first_prediction_product) : '',
+        photo: (rec.photo as string) || '',
       });
     } else if (isHarvestPlan) {
       setHarvestForm({
@@ -479,17 +548,44 @@ const Inspections = () => {
         est_error: rec.est_error != null ? String(rec.est_error) : '',
       });
     }
-    setEditId(rec.id);
-    setDialogOpen(true);
+    setEditId(rec.id); setDialogOpen(true);
   };
 
-  const openCreate = () => { 
-    setForm(emptyForm); 
-    setAfter60Form(emptyAfter60Form); 
-    setHarvestForm(emptyHarvestPlanForm);
-    setEditId(null); 
-    setDialogOpen(true); 
+  const openCreate = () => {
+    setForm(emptyForm); setAfter60Form(emptyAfter60Form); setAfter120Form(emptyAfter120Form);
+    setHarvestForm(emptyHarvestPlanForm); setEditId(null); setDialogOpen(true);
   };
+
+  const renderDatePicker = (label: string, value: Date | undefined, onChange: (d: Date | undefined) => void) => (
+    <div>
+      <Label>{label}</Label>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !value && "text-muted-foreground")}>
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {value ? format(value, 'PPP') : 'Pick a date'}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar mode="single" selected={value} onSelect={onChange} initialFocus className="p-3 pointer-events-auto" />
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+
+  const renderNumInput = (label: string, value: string, onChange: (v: string) => void, readOnly = false) => (
+    <div>
+      <Label className="text-xs">{label}</Label>
+      <Input type="number" value={value} onChange={e => onChange(e.target.value)} placeholder="0" readOnly={readOnly} className={readOnly ? 'bg-muted' : ''} />
+    </div>
+  );
+
+  const renderReadOnly = (label: string, value: string | number) => (
+    <div>
+      <Label>{label}</Label>
+      <Input value={value} readOnly className="bg-muted" />
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -507,234 +603,66 @@ const Inspections = () => {
             <div className="space-y-3">
               {isInspectionTable ? (
                 <>
-                  {/* 1. รอบติดตาม */}
                   <div>
                     <Label>รอบติดตาม *</Label>
                     <Select value={form.รอบติดตาม} onValueChange={v => updateField('รอบติดตาม', v)}>
                       <SelectTrigger><SelectValue placeholder="เลือกรอบติดตาม" /></SelectTrigger>
-                      <SelectContent>
-                        {followUpOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                      </SelectContent>
+                      <SelectContent>{followUpOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-
-                  {/* 2. Date */}
-                  <div>
-                    <Label>Date *</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !form.date && "text-muted-foreground")}>
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {form.date ? format(form.date, 'PPP') : 'Pick a date'}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={form.date} onSelect={d => updateField('date', d)} initialFocus className="p-3 pointer-events-auto" />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  {/* 3. Environment */}
-                  <div>
-                    <Label>Environment</Label>
-                    <Input value={form.Environment} onChange={e => updateField('Environment', e.target.value)} placeholder="Environment" />
-                  </div>
-
-                  {/* 4. โรค */}
-                  <div>
-                    <Label>โรค</Label>
-                    <Input value={form.โรค} onChange={e => updateField('โรค', e.target.value)} placeholder="โรค" />
-                  </div>
-
-                  {/* 5. การตาย */}
-                  <div>
-                    <Label>การตาย</Label>
-                    <Input value={form.การตาย} onChange={e => updateField('การตาย', e.target.value)} placeholder="การตาย" />
-                  </div>
-
-                  {/* 6. Previous weight */}
-                  <div>
-                    <Label>Previous weight</Label>
-                    <Input type="number" value={form.previous_weight} onChange={e => updateField('previous_weight', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 7-11. Size categories */}
-                  <div>
-                    <Label>Very small ≤ 4.5 cm. (ลูกจิ๋ว)</Label>
-                    <Input type="number" value={form.sub_small} onChange={e => updateField('sub_small', e.target.value)} placeholder="0" />
-                  </div>
-                  <div>
-                    <Label>Small 4.5 {'<'} x ≤ 6 cm. (ลูกเล็ก)</Label>
-                    <Input type="number" value={form.small} onChange={e => updateField('small', e.target.value)} placeholder="0" />
-                  </div>
-                  <div>
-                    <Label>Medium 6 {'<'} x ≤ 8.5 cm. (ลูกกลาง)</Label>
-                    <Input type="number" value={form.medium} onChange={e => updateField('medium', e.target.value)} placeholder="0" />
-                  </div>
-                  <div>
-                    <Label>Large 8.5 {'<'} x ≤ 9.5 cm. (ลูกใหญ่)</Label>
-                    <Input type="number" value={form.large} onChange={e => updateField('large', e.target.value)} placeholder="0" />
-                  </div>
-                  <div>
-                    <Label>Very large {'>'} 9.5 cm. (ลูกใหญ่พิเศษ)</Label>
-                    <Input type="number" value={form.very_large} onChange={e => updateField('very_large', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 12. Average weight (auto-calculated) */}
-                  <div>
-                    <Label>Average weight (Kg.)</Label>
-                    <Input value={averageWeight} readOnly className="bg-muted" />
-                  </div>
+                  {renderDatePicker('Date *', form.date, d => updateField('date', d))}
+                  <div><Label>Environment</Label><Input value={form.Environment} onChange={e => updateField('Environment', e.target.value)} placeholder="Environment" /></div>
+                  <div><Label>โรค</Label><Input value={form.โรค} onChange={e => updateField('โรค', e.target.value)} placeholder="โรค" /></div>
+                  <div><Label>การตาย</Label><Input value={form.การตาย} onChange={e => updateField('การตาย', e.target.value)} placeholder="การตาย" /></div>
+                  <div><Label>Previous weight</Label><Input type="number" value={form.previous_weight} onChange={e => updateField('previous_weight', e.target.value)} placeholder="0" /></div>
+                  <div><Label>Very small ≤ 4.5 cm. (ลูกจิ๋ว)</Label><Input type="number" value={form.sub_small} onChange={e => updateField('sub_small', e.target.value)} placeholder="0" /></div>
+                  <div><Label>Small 4.5 {'<'} x ≤ 6 cm. (ลูกเล็ก)</Label><Input type="number" value={form.small} onChange={e => updateField('small', e.target.value)} placeholder="0" /></div>
+                  <div><Label>Medium 6 {'<'} x ≤ 8.5 cm. (ลูกกลาง)</Label><Input type="number" value={form.medium} onChange={e => updateField('medium', e.target.value)} placeholder="0" /></div>
+                  <div><Label>Large 8.5 {'<'} x ≤ 9.5 cm. (ลูกใหญ่)</Label><Input type="number" value={form.large} onChange={e => updateField('large', e.target.value)} placeholder="0" /></div>
+                  <div><Label>Very large {'>'} 9.5 cm. (ลูกใหญ่พิเศษ)</Label><Input type="number" value={form.very_large} onChange={e => updateField('very_large', e.target.value)} placeholder="0" /></div>
+                  {renderReadOnly('Average weight (Kg.)', averageWeight)}
                 </>
               ) : isAfter60 ? (
                 <>
-                  {/* 1. Plot's month */}
-                  <div>
-                    <Label>Plot's month (M-Y plot)</Label>
-                    <Input value={after60Form['M-Y plot']} readOnly className="bg-muted" />
-                  </div>
-
-                  {/* 2. Force month */}
-                  <div>
-                    <Label>Force month</Label>
-                    <Input value={after60Form.m_y_force} readOnly className="bg-muted" />
-                  </div>
-
-                  {/* 3. Area */}
-                  <div>
-                    <Label>Area</Label>
-                    <Input value={after60Form.Area} readOnly className="bg-muted" />
-                  </div>
-
-                  {/* 4. Force plant */}
-                  <div>
-                    <Label>Force plant</Label>
-                    <Input value={after60Form.force_plant} readOnly className="bg-muted" />
-                  </div>
-
-                  {/* 5. Force date */}
-                  <div>
-                    <Label>Force date</Label>
-                    <Input value={after60Form.force_date ? format(after60Form.force_date, 'PPP') : ''} readOnly className="bg-muted" />
-                  </div>
-
-                  {/* 6. Inspection date */}
-                  <div>
-                    <Label>Inspection date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !after60Form.inspection_date && "text-muted-foreground")}>
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {after60Form.inspection_date ? format(after60Form.inspection_date, 'PPP') : 'Pick a date'}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={after60Form.inspection_date} onSelect={d => updateAfter60Field('inspection_date', d)} initialFocus className="p-3 pointer-events-auto" />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  {/* Row 1 */}
+                  {renderReadOnly("Plot's month (M-Y plot)", after60Form['M-Y plot'])}
+                  {renderReadOnly('Force month', after60Form.m_y_force)}
+                  {renderReadOnly('Area', after60Form.Area)}
+                  {renderReadOnly('Force plant', after60Form.force_plant)}
+                  {renderReadOnly('Force date', after60Form.force_date ? format(after60Form.force_date, 'PPP') : '')}
+                  {renderDatePicker('Inspection date', after60Form.inspection_date, d => updateAfter60Field('inspection_date', d))}
                   <div className="border-t pt-3 mt-3">
                     <p className="font-semibold text-sm mb-2">แถวที่ 1</p>
                     <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <Label className="text-xs">ต้นที่ออกผล</Label>
-                        <Input type="number" value={after60Form.fruiting_row1} onChange={e => updateAfter60Field('fruiting_row1', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
-                        <Input type="number" value={after60Form['Non-fruiting_row1']} onChange={e => updateAfter60Field('Non-fruiting_row1', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ผลรวม</Label>
-                        <Input value={totalRow1} readOnly className="bg-muted" />
-                      </div>
+                      {renderNumInput('ต้นที่ออกผล', after60Form.fruiting_row1, v => updateAfter60Field('fruiting_row1', v))}
+                      {renderNumInput('ต้นที่ไม่ออกผล', after60Form['Non-fruiting_row1'], v => updateAfter60Field('Non-fruiting_row1', v))}
+                      {renderNumInput('ผลรวม', String(totalRow1_60), () => {}, true)}
                     </div>
                   </div>
-
-                  {/* Row 2 */}
                   <div className="border-t pt-3 mt-3">
                     <p className="font-semibold text-sm mb-2">แถวที่ 2</p>
                     <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <Label className="text-xs">ต้นที่ออกผล</Label>
-                        <Input type="number" value={after60Form.fruiting_row2} onChange={e => updateAfter60Field('fruiting_row2', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
-                        <Input type="number" value={after60Form.non_fruiting_row2} onChange={e => updateAfter60Field('non_fruiting_row2', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ผลรวม</Label>
-                        <Input value={totalRow2} readOnly className="bg-muted" />
-                      </div>
+                      {renderNumInput('ต้นที่ออกผล', after60Form.fruiting_row2, v => updateAfter60Field('fruiting_row2', v))}
+                      {renderNumInput('ต้นที่ไม่ออกผล', after60Form.non_fruiting_row2, v => updateAfter60Field('non_fruiting_row2', v))}
+                      {renderNumInput('ผลรวม', String(totalRow2_60), () => {}, true)}
                     </div>
                   </div>
-
-                  {/* Row 3 */}
                   <div className="border-t pt-3 mt-3">
                     <p className="font-semibold text-sm mb-2">แถวที่ 3</p>
                     <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <Label className="text-xs">ต้นที่ออกผล</Label>
-                        <Input type="number" value={after60Form.fruiting_row3} onChange={e => updateAfter60Field('fruiting_row3', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ต้นที่ไม่ออกผล</Label>
-                        <Input type="number" value={after60Form.non_fruiting_row3} onChange={e => updateAfter60Field('non_fruiting_row3', e.target.value)} placeholder="0" />
-                      </div>
-                      <div>
-                        <Label className="text-xs">ผลรวม</Label>
-                        <Input value={totalRow3} readOnly className="bg-muted" />
-                      </div>
+                      {renderNumInput('ต้นที่ออกผล', after60Form.fruiting_row3, v => updateAfter60Field('fruiting_row3', v))}
+                      {renderNumInput('ต้นที่ไม่ออกผล', after60Form.non_fruiting_row3, v => updateAfter60Field('non_fruiting_row3', v))}
+                      {renderNumInput('ผลรวม', String(totalRow3_60), () => {}, true)}
                     </div>
                   </div>
-
-                  {/* 16-24: Summary fields */}
                   <div className="border-t pt-3 mt-3 space-y-3">
-                    <div>
-                      <Label>ผลรวมต้นที่ออกผล (total_fruiting)</Label>
-                      <Input value={totalFruiting} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>ผลรวมต้นที่ไม่ออกผล (total_non-fruiting)</Label>
-                      <Input value={totalNonFruiting} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>ผลรวมทั้งหมด (total_all)</Label>
-                      <Input value={totalAll} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>เปอร์เซนต์ต้นที่ออกผล (%)</Label>
-                      <Input value={fruitingPerc} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>เปอร์เซนต์ต้นที่ไม่ออกผล (%)</Label>
-                      <Input value={nonFruitingPerc} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>จำนวนต้นที่ให้ผลผลิต (productive_plant)</Label>
-                      <Input value={productivePlant} readOnly className="bg-muted" />
-                    </div>
-                    <div>
-                      <Label>คาดหมายวันเก็บผลผลิต (est_harvest_date)</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !after60Form.est_harvest_date && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {after60Form.est_harvest_date ? format(after60Form.est_harvest_date, 'PPP') : 'Pick a date'}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={after60Form.est_harvest_date} onSelect={d => updateAfter60Field('est_harvest_date', d)} initialFocus className="p-3 pointer-events-auto" />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div>
-                      <Label>คาดหมายผลผลิตเบื้องต้น (est_products)</Label>
-                      <Input value={estProducts} readOnly className="bg-muted" />
-                    </div>
+                    {renderReadOnly('ผลรวมต้นที่ออกผล', totalFruiting)}
+                    {renderReadOnly('ผลรวมต้นที่ไม่ออกผล', totalNonFruiting)}
+                    {renderReadOnly('ผลรวมทั้งหมด', totalAll_60)}
+                    {renderReadOnly('เปอร์เซนต์ต้นที่ออกผล (%)', fruitingPerc)}
+                    {renderReadOnly('เปอร์เซนต์ต้นที่ไม่ออกผล (%)', nonFruitingPerc)}
+                    {renderReadOnly('จำนวนต้นที่ให้ผลผลิต', productivePlant)}
+                    {renderDatePicker('คาดหมายวันเก็บผลผลิต', after60Form.est_harvest_date, d => updateAfter60Field('est_harvest_date', d))}
+                    {renderReadOnly('คาดหมายผลผลิตเบื้องต้น', estProducts)}
                     <div>
                       <Label>Photo</Label>
                       {after60Form.plant_photo && (
@@ -754,110 +682,166 @@ const Inspections = () => {
                     </div>
                   </div>
                 </>
+              ) : isAfter120 ? (
+                <>
+                  {/* 1-6: Auto-filled from plantation */}
+                  {renderReadOnly("Plot's month", after120Form.m_y_plot)}
+                  {renderReadOnly('Force month', after120Form.m_y_force)}
+                  {renderReadOnly('Area', after120Form.area)}
+                  {renderReadOnly('Force plant', after120Form.force_plant)}
+                  {renderReadOnly('Force date', after120Form.force_date ? format(after120Form.force_date, 'PPP') : '')}
+                  {renderDatePicker('Inspection date', after120Form.inspection_date, d => updateAfter120Field('inspection_date', d))}
+
+                  {/* Row 1: fields 7-12 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 1</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกใหญ่', after120Form.large_row1, v => updateAfter120Field('large_row1', v))}
+                      {renderNumInput('ลูกเล็ก', after120Form.small_row1, v => updateAfter120Field('small_row1', v))}
+                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row1, v => updateAfter120Field('very_small_row1', v))}
+                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row1, v => updateAfter120Field('defect_row1', v))}
+                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row1, v => updateAfter120Field('destroyed_row1', v))}
+                      {renderNumInput('ผลรวมแถวที่1', String(totalRow1_120), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Row 2: fields 13-18 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 2</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกใหญ่', after120Form.large_row2, v => updateAfter120Field('large_row2', v))}
+                      {renderNumInput('ลูกเล็ก', after120Form.small_row2, v => updateAfter120Field('small_row2', v))}
+                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row2, v => updateAfter120Field('very_small_row2', v))}
+                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row2, v => updateAfter120Field('defect_row2', v))}
+                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row2, v => updateAfter120Field('destroyed_row2', v))}
+                      {renderNumInput('ผลรวมแถวที่2', String(totalRow2_120), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Row 3: fields 19-24 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">แถวที่ 3</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกใหญ่', after120Form.large_row3, v => updateAfter120Field('large_row3', v))}
+                      {renderNumInput('ลูกเล็ก', after120Form.small_row3, v => updateAfter120Field('small_row3', v))}
+                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row3, v => updateAfter120Field('very_small_row3', v))}
+                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row3, v => updateAfter120Field('defect_row3', v))}
+                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row3, v => updateAfter120Field('destroyed_row3', v))}
+                      {renderNumInput('ผลรวมแถวที่3', String(totalRow3_120), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Nitrate Row 1: fields 25-28 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 1</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกที่1', after120Form.nitrate_row1_no1, v => updateAfter120Field('nitrate_row1_no1', v))}
+                      {renderNumInput('ลูกที่2', after120Form.nitrate_row1_no2, v => updateAfter120Field('nitrate_row1_no2', v))}
+                      {renderNumInput('ลูกที่3', after120Form.nitrate_row1_no3, v => updateAfter120Field('nitrate_row1_no3', v))}
+                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow1), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Nitrate Row 2: fields 29-32 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 2</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกที่1', after120Form.nitrate_row2_no1, v => updateAfter120Field('nitrate_row2_no1', v))}
+                      {renderNumInput('ลูกที่2', after120Form.nitrate_row2_no2, v => updateAfter120Field('nitrate_row2_no2', v))}
+                      {renderNumInput('ลูกที่3', after120Form.nitrate_row2_no3, v => updateAfter120Field('nitrate_row2_no3', v))}
+                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow2), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Nitrate Row 3: fields 33-36 */}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 3</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {renderNumInput('ลูกที่1', after120Form.nitrate_row3_no1, v => updateAfter120Field('nitrate_row3_no1', v))}
+                      {renderNumInput('ลูกที่2', after120Form.nitrate_row3_no2, v => updateAfter120Field('nitrate_row3_no2', v))}
+                      {renderNumInput('ลูกที่3', after120Form.nitrate_row3_no3, v => updateAfter120Field('nitrate_row3_no3', v))}
+                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow3), () => {}, true)}
+                    </div>
+                  </div>
+
+                  {/* Nitrate averages: fields 37-40 */}
+                  <div className="border-t pt-3 mt-3 space-y-3">
+                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่1', avgNitrateNo1)}
+                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่2', avgNitrateNo2)}
+                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่3', avgNitrateNo3)}
+                    {renderReadOnly('ค่าเฉลี่ยไนเตรทรวม', avgTotalNitrate)}
+                  </div>
+
+                  {/* Totals & percentages: fields 41-53 */}
+                  <div className="border-t pt-3 mt-3 space-y-3">
+                    {renderReadOnly('ผลรวมลูกใหญ่', totalLarge)}
+                    {renderReadOnly('ผลรวมลูกเล็ก', totalSmall)}
+                    {renderReadOnly('ผลรวมลูกจิ๋ว', totalVerySmall)}
+                    {renderReadOnly('ผลรวมตำหนิอื่นๆ', totalDefect)}
+                    {renderReadOnly('ผลรวมสัตว์ทำลาย', totalDestroyed)}
+                    {renderReadOnly('เปอร์เซนต์ลูกใหญ่ (%)', largePerc)}
+                    {renderReadOnly('เปอร์เซนต์ลูกเล็ก (%)', smallPerc)}
+                    {renderReadOnly('เปอร์เซนต์ลูกจิ๋ว (%)', verySmallPerc)}
+                    {renderReadOnly('เปอร์เซนต์ตำหนิอื่นๆ (%)', defectPerc)}
+                    {renderReadOnly('เปอร์เซนต์สัตว์ทำลาย (%)', destroyedPerc)}
+                    {renderReadOnly('เปอร์เซนต์ลูกปกติ (%)', normalPerc)}
+                    {renderReadOnly('ลูกปกติ (good_products)', goodProducts)}
+                    {renderReadOnly('ผลรวมทั้งหมด (total_all)', totalAll_120)}
+                  </div>
+
+                  {/* Weights: fields 54-56 */}
+                  <div className="border-t pt-3 mt-3 space-y-3">
+                    {renderNumInput('น้ำหนักเฉลี่ยลูกใหญ่ (default 1.0)', after120Form.large_weight, v => updateAfter120Field('large_weight', v))}
+                    {renderNumInput('น้ำหนักเฉลี่ยลูกเล็ก (default 0.7)', after120Form.small_weight, v => updateAfter120Field('small_weight', v))}
+                    {renderNumInput('น้ำหนักเฉลี่ยลูกจิ๋ว (default 0.3)', after120Form.very_small_weight, v => updateAfter120Field('very_small_weight', v))}
+                  </div>
+
+                  {/* Prediction: fields 57-58 */}
+                  <div className="border-t pt-3 mt-3 space-y-3">
+                    {renderReadOnly('ผลผลิตที่คาดหมายครั้งแรก', after120Form.first_prediction_product)}
+                    {renderReadOnly('ผลผลิตที่คาดหมาย (Kg.)', predictionProductKg)}
+                  </div>
+
+                  {/* Photo: field 59 */}
+                  <div className="border-t pt-3 mt-3">
+                    <Label>Photo</Label>
+                    {after120Form.photo && (
+                      <div className="relative w-full h-48 rounded-md overflow-hidden border border-border mb-2">
+                        <img src={after120Form.photo} alt="120D" className="w-full h-full object-cover" />
+                        <Button size="icon" variant="destructive" className="absolute top-2 right-2 h-7 w-7" onClick={() => updateAfter120Field('photo', '')}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Button variant="outline" size="sm" asChild disabled={uploading120Photo}>
+                        <span><Upload className="h-4 w-4 mr-1" />{uploading120Photo ? 'Uploading...' : 'Upload Photo'}</span>
+                      </Button>
+                      <input type="file" accept="image/*" className="hidden" onChange={handle120PhotoUpload} disabled={uploading120Photo} />
+                    </label>
+                  </div>
+                </>
               ) : isHarvestPlan ? (
                 <>
-                  {/* 1. Week */}
                   <div>
                     <Label>Week *</Label>
                     <Select value={harvestForm.week} onValueChange={v => updateHarvestField('week', v)}>
                       <SelectTrigger><SelectValue placeholder="เลือกสัปดาห์" /></SelectTrigger>
-                      <SelectContent>
-                        {weekOptions.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}
-                      </SelectContent>
+                      <SelectContent>{weekOptions.map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-
-                  {/* 2. Predict date */}
-                  <div>
-                    <Label>Predict date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !harvestForm.predict_date && "text-muted-foreground")}>
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {harvestForm.predict_date ? format(harvestForm.predict_date, 'PPP') : 'Pick a date'}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={harvestForm.predict_date} onSelect={d => updateHarvestField('predict_date', d)} initialFocus className="p-3 pointer-events-auto" />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  {/* 3. Actual date */}
-                  <div>
-                    <Label>Actual date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !harvestForm.actual_date && "text-muted-foreground")}>
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {harvestForm.actual_date ? format(harvestForm.actual_date, 'PPP') : 'Pick a date'}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={harvestForm.actual_date} onSelect={d => updateHarvestField('actual_date', d)} initialFocus className="p-3 pointer-events-auto" />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  {/* 4. แผนการส่ง */}
-                  <div>
-                    <Label>แผนการส่ง (harvest_plan)</Label>
-                    <Input type="number" value={harvestForm.harvest_plan} onChange={e => updateHarvestField('harvest_plan', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 5. ส่งจริง */}
-                  <div>
-                    <Label>ส่งจริง (actual_havest)</Label>
-                    <Input type="number" value={harvestForm.actual_havest} onChange={e => updateHarvestField('actual_havest', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 6. เก็บเข้ามาก่อน */}
-                  <div>
-                    <Label>เก็บเข้ามาก่อน (move_to_previous_week)</Label>
-                    <Input type="number" value={harvestForm.move_to_previous_week} onChange={e => updateHarvestField('move_to_previous_week', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 7. เลื่อนไปสัปดาห์อื่น */}
-                  <div>
-                    <Label>เลื่อนไปสัปดาห์อื่น (postpone_another_week)</Label>
-                    <Input type="number" value={harvestForm.postpone_another_week} onChange={e => updateHarvestField('postpone_another_week', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 8. มาจากสัปดาห์ก่อน */}
-                  <div>
-                    <Label>มาจากสัปดาห์ก่อน (move_from_previous_week)</Label>
-                    <Input type="number" value={harvestForm.move_from_previous_week} onChange={e => updateHarvestField('move_from_previous_week', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 9. บังคับจริง */}
-                  <div>
-                    <Label>บังคับจริง (actual_forcing)</Label>
-                    <Input type="number" value={harvestForm.actual_forcing} onChange={e => updateHarvestField('actual_forcing', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 10. นอกแผน */}
-                  <div>
-                    <Label>นอกแผน (out_plan)</Label>
-                    <Input type="number" value={harvestForm.out_plan} onChange={e => updateHarvestField('out_plan', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 11. คุณภาพต่ำ */}
-                  <div>
-                    <Label>คุณภาพต่ำ (low_quality)</Label>
-                    <Input type="number" value={harvestForm.low_quality} onChange={e => updateHarvestField('low_quality', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 12. ขายที่อื่น */}
-                  <div>
-                    <Label>ขายที่อื่น (sale_elsewhere)</Label>
-                    <Input type="number" value={harvestForm.sale_elsewhere} onChange={e => updateHarvestField('sale_elsewhere', e.target.value)} placeholder="0" />
-                  </div>
-
-                  {/* 13. ประเมิณคลาดเคลื่อน */}
-                  <div>
-                    <Label>ประเมิณคลาดเคลื่อน (est_error)</Label>
-                    <Input type="number" value={harvestForm.est_error} onChange={e => updateHarvestField('est_error', e.target.value)} placeholder="0" />
-                  </div>
+                  {renderDatePicker('Predict date', harvestForm.predict_date, d => updateHarvestField('predict_date', d))}
+                  {renderDatePicker('Actual date', harvestForm.actual_date, d => updateHarvestField('actual_date', d))}
+                  <div><Label>แผนการส่ง (harvest_plan)</Label><Input type="number" value={harvestForm.harvest_plan} onChange={e => updateHarvestField('harvest_plan', e.target.value)} placeholder="0" /></div>
+                  <div><Label>ส่งจริง (actual_havest)</Label><Input type="number" value={harvestForm.actual_havest} onChange={e => updateHarvestField('actual_havest', e.target.value)} placeholder="0" /></div>
+                  <div><Label>เก็บเข้ามาก่อน (move_to_previous_week)</Label><Input type="number" value={harvestForm.move_to_previous_week} onChange={e => updateHarvestField('move_to_previous_week', e.target.value)} placeholder="0" /></div>
+                  <div><Label>เลื่อนไปสัปดาห์อื่น (postpone_another_week)</Label><Input type="number" value={harvestForm.postpone_another_week} onChange={e => updateHarvestField('postpone_another_week', e.target.value)} placeholder="0" /></div>
+                  <div><Label>มาจากสัปดาห์ก่อน (move_from_previous_week)</Label><Input type="number" value={harvestForm.move_from_previous_week} onChange={e => updateHarvestField('move_from_previous_week', e.target.value)} placeholder="0" /></div>
+                  <div><Label>บังคับจริง (actual_forcing)</Label><Input type="number" value={harvestForm.actual_forcing} onChange={e => updateHarvestField('actual_forcing', e.target.value)} placeholder="0" /></div>
+                  <div><Label>นอกแผน (out_plan)</Label><Input type="number" value={harvestForm.out_plan} onChange={e => updateHarvestField('out_plan', e.target.value)} placeholder="0" /></div>
+                  <div><Label>คุณภาพต่ำ (low_quality)</Label><Input type="number" value={harvestForm.low_quality} onChange={e => updateHarvestField('low_quality', e.target.value)} placeholder="0" /></div>
+                  <div><Label>ขายที่อื่น (sale_elsewhere)</Label><Input type="number" value={harvestForm.sale_elsewhere} onChange={e => updateHarvestField('sale_elsewhere', e.target.value)} placeholder="0" /></div>
+                  <div><Label>ประเมิณคลาดเคลื่อน (est_error)</Label><Input type="number" value={harvestForm.est_error} onChange={e => updateHarvestField('est_error', e.target.value)} placeholder="0" /></div>
                 </>
               ) : (
                 <p className="text-sm text-muted-foreground">A new record will be created for this plantation.</p>
@@ -882,7 +866,7 @@ const Inspections = () => {
                     <FileText className="h-4 w-4" />
                     {isInspectionTable && rec.date
                       ? format(parseISO(rec.date as string), 'PPP')
-                      : isAfter60 && rec.inspection_date
+                      : (isAfter60 || isAfter120) && rec.inspection_date
                       ? format(parseISO(rec.inspection_date as string), 'PPP')
                       : isHarvestPlan && rec.week
                       ? (rec.week as string)
@@ -895,7 +879,7 @@ const Inspections = () => {
                     )}
                   </span>
                   <div className="flex gap-1">
-                    {(isInspectionTable || isAfter60 || isHarvestPlan) && (
+                    {(isInspectionTable || isAfter60 || isAfter120 || isHarvestPlan) && (
                       <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(rec)}>
                         <Edit className="h-3.5 w-3.5" />
                       </Button>
@@ -923,9 +907,19 @@ const Inspections = () => {
                   {rec.total_all != null && <p><span className="text-muted-foreground">ผลรวมทั้งหมด:</span> {String(rec.total_all)}</p>}
                   {rec.fruiting_perc != null && <p><span className="text-muted-foreground">ออกผล:</span> {String(rec.fruiting_perc)}%</p>}
                   {rec.productive_plant != null && <p><span className="text-muted-foreground">ต้นที่ให้ผลผลิต:</span> {String(rec.productive_plant)}</p>}
-                  {rec.plant_photo && (
-                    <img src={rec.plant_photo as string} alt="Plant" className="w-full h-32 object-cover rounded-md mt-2" />
-                  )}
+                  {rec.plant_photo && <img src={rec.plant_photo as string} alt="Plant" className="w-full h-32 object-cover rounded-md mt-2" />}
+                </CardContent>
+              )}
+              {isAfter120 && (
+                <CardContent className="text-sm space-y-1">
+                  {rec.m_y_plot && <p><span className="text-muted-foreground">Plot's month:</span> {rec.m_y_plot as string}</p>}
+                  {rec.area != null && <p><span className="text-muted-foreground">Area:</span> {String(rec.area)}</p>}
+                  {rec.total_all != null && <p><span className="text-muted-foreground">ผลรวมทั้งหมด:</span> {String(rec.total_all)}</p>}
+                  {rec.good_products != null && <p><span className="text-muted-foreground">ลูกปกติ:</span> {String(rec.good_products)}</p>}
+                  {rec.normal_perc != null && <p><span className="text-muted-foreground">ปกติ:</span> {String(rec.normal_perc)}%</p>}
+                  {rec.avg_total_nitrate != null && <p><span className="text-muted-foreground">ไนเตรทเฉลี่ย:</span> {String(rec.avg_total_nitrate)}</p>}
+                  {rec.prediction_product_kg != null && <p><span className="text-muted-foreground">คาดหมาย (Kg.):</span> {String(rec.prediction_product_kg)}</p>}
+                  {rec.photo && <img src={rec.photo as string} alt="120D" className="w-full h-32 object-cover rounded-md mt-2" />}
                 </CardContent>
               )}
               {isHarvestPlan && (
