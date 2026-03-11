@@ -130,6 +130,10 @@ const emptyAfter120Form: After120Form = {
   photo: '',
 };
 
+// After140Form is identical structure to After120Form
+type After140Form = After120Form;
+const emptyAfter140Form: After140Form = { ...emptyAfter120Form };
+
 interface GenericRecord {
   id: string | number;
   created_at: string;
@@ -143,6 +147,7 @@ interface PlantationData {
   force_plant: number | null;
   "60_days_after_force": string | null;
   "120_days_after_force": string | null;
+  "140_days_after_force": string | null;
 }
 
 const Inspections = () => {
@@ -152,17 +157,20 @@ const Inspections = () => {
   const [form, setForm] = useState<InspectionForm>(emptyForm);
   const [after60Form, setAfter60Form] = useState<After60Form>(emptyAfter60Form);
   const [after120Form, setAfter120Form] = useState<After120Form>(emptyAfter120Form);
+  const [after140Form, setAfter140Form] = useState<After140Form>(emptyAfter140Form);
   const [harvestForm, setHarvestForm] = useState<HarvestPlanForm>(emptyHarvestPlanForm);
   const [plantationData, setPlantationData] = useState<PlantationData | null>(null);
   const [editId, setEditId] = useState<string | number | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [uploading60Photo, setUploading60Photo] = useState(false);
   const [uploading120Photo, setUploading120Photo] = useState(false);
+  const [uploading140Photo, setUploading140Photo] = useState(false);
 
   const config = type ? tableConfig[type] : null;
   const isInspectionTable = type === 'inspection';
   const isAfter60 = type === 'after_60';
   const isAfter120 = type === 'after_120';
+  const isAfter140 = type === 'after_140';
   const isHarvestPlan = type === 'harvest_plan';
 
   // ===== Inspection auto-calc =====
@@ -187,7 +195,11 @@ const Inspections = () => {
   const fruitingPerc = useMemo(() => totalAll_60 === 0 ? 0 : Math.round((totalFruiting / totalAll_60) * 100 * 100) / 100, [totalFruiting, totalAll_60]);
   const nonFruitingPerc = useMemo(() => totalAll_60 === 0 ? 0 : Math.round((totalNonFruiting / totalAll_60) * 100 * 100) / 100, [totalNonFruiting, totalAll_60]);
   const productivePlant = useMemo(() => Math.round((fruitingPerc * (parseFloat(after60Form.force_plant) || 0)) / 100), [fruitingPerc, after60Form.force_plant]);
-  const estProducts = useMemo(() => Math.round((totalFruiting * (parseFloat(after60Form.force_plant) || 0)) * 100 * 100) / 100, [totalFruiting, after60Form.force_plant]);
+  // Fixed: est_products = ((totalFruiting * force_plant) / 100) rounded to 2 decimals
+  const estProducts = useMemo(() => {
+    const fp = parseFloat(after60Form.force_plant) || 0;
+    return Math.round(((totalFruiting * fp) / 100) * 100) / 100;
+  }, [totalFruiting, after60Form.force_plant]);
 
   // ===== After 120 auto-calc =====
   const p = (v: string) => parseFloat(v) || 0;
@@ -232,6 +244,47 @@ const Inspections = () => {
     return Math.round(((largeFrac * (firstPred * normalFrac)) * largeW + (smallFrac * (firstPred * normalFrac)) * smallW + (vsFrac * (firstPred * normalFrac)) * verySmallW) * 100) / 100;
   }, [largePerc, smallPerc, verySmallPerc, normalPerc, firstPred, largeW, smallW, verySmallW]);
 
+  // ===== After 140 auto-calc =====
+  const totalRow1_140 = useMemo(() => p(after140Form.large_row1) + p(after140Form.small_row1) + p(after140Form.very_small_row1) + p(after140Form.defect_row1) + p(after140Form.destroyed_row1), [after140Form.large_row1, after140Form.small_row1, after140Form.very_small_row1, after140Form.defect_row1, after140Form.destroyed_row1]);
+  const totalRow2_140 = useMemo(() => p(after140Form.large_row2) + p(after140Form.small_row2) + p(after140Form.very_small_row2) + p(after140Form.defect_row2) + p(after140Form.destroyed_row2), [after140Form.large_row2, after140Form.small_row2, after140Form.very_small_row2, after140Form.defect_row2, after140Form.destroyed_row2]);
+  const totalRow3_140 = useMemo(() => p(after140Form.large_row3) + p(after140Form.small_row3) + p(after140Form.very_small_row3) + p(after140Form.defect_row3) + p(after140Form.destroyed_row3), [after140Form.large_row3, after140Form.small_row3, after140Form.very_small_row3, after140Form.defect_row3, after140Form.destroyed_row3]);
+
+  const avgNitrateRow1_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row1_no1), p(after140Form.nitrate_row1_no2), p(after140Form.nitrate_row1_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row1_no1, after140Form.nitrate_row1_no2, after140Form.nitrate_row1_no3]);
+  const avgNitrateRow2_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row2_no1), p(after140Form.nitrate_row2_no2), p(after140Form.nitrate_row2_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row2_no1, after140Form.nitrate_row2_no2, after140Form.nitrate_row2_no3]);
+  const avgNitrateRow3_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row3_no1), p(after140Form.nitrate_row3_no2), p(after140Form.nitrate_row3_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row3_no1, after140Form.nitrate_row3_no2, after140Form.nitrate_row3_no3]);
+
+  const avgNitrateNo1_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row1_no1), p(after140Form.nitrate_row2_no1), p(after140Form.nitrate_row3_no1)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row1_no1, after140Form.nitrate_row2_no1, after140Form.nitrate_row3_no1]);
+  const avgNitrateNo2_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row1_no2), p(after140Form.nitrate_row2_no2), p(after140Form.nitrate_row3_no2)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row1_no2, after140Form.nitrate_row2_no2, after140Form.nitrate_row3_no2]);
+  const avgNitrateNo3_140 = useMemo(() => { const vals = [p(after140Form.nitrate_row1_no3), p(after140Form.nitrate_row2_no3), p(after140Form.nitrate_row3_no3)]; return vals.some(v => v > 0) ? Math.round((vals[0] + vals[1] + vals[2]) / 3 * 100) / 100 : 0; }, [after140Form.nitrate_row1_no3, after140Form.nitrate_row2_no3, after140Form.nitrate_row3_no3]);
+
+  const avgTotalNitrate_140 = useMemo(() => (avgNitrateRow1_140 + avgNitrateRow2_140 + avgNitrateRow3_140) > 0 ? Math.round((avgNitrateRow1_140 + avgNitrateRow2_140 + avgNitrateRow3_140) / 3 * 100) / 100 : 0, [avgNitrateRow1_140, avgNitrateRow2_140, avgNitrateRow3_140]);
+
+  const totalLarge_140 = useMemo(() => p(after140Form.large_row1) + p(after140Form.large_row2) + p(after140Form.large_row3), [after140Form.large_row1, after140Form.large_row2, after140Form.large_row3]);
+  const totalSmall_140 = useMemo(() => p(after140Form.small_row1) + p(after140Form.small_row2) + p(after140Form.small_row3), [after140Form.small_row1, after140Form.small_row2, after140Form.small_row3]);
+  const totalVerySmall_140 = useMemo(() => p(after140Form.very_small_row1) + p(after140Form.very_small_row2) + p(after140Form.very_small_row3), [after140Form.very_small_row1, after140Form.very_small_row2, after140Form.very_small_row3]);
+  const totalDefect_140 = useMemo(() => p(after140Form.defect_row1) + p(after140Form.defect_row2) + p(after140Form.defect_row3), [after140Form.defect_row1, after140Form.defect_row2, after140Form.defect_row3]);
+  const totalDestroyed_140 = useMemo(() => p(after140Form.destroyed_row1) + p(after140Form.destroyed_row2) + p(after140Form.destroyed_row3), [after140Form.destroyed_row1, after140Form.destroyed_row2, after140Form.destroyed_row3]);
+  const totalAll_140 = totalRow1_140 + totalRow2_140 + totalRow3_140;
+  const goodProducts_140 = totalAll_140 - (totalDefect_140 + totalDestroyed_140);
+  const largePerc_140 = goodProducts_140 > 0 ? Math.round((totalLarge_140 / goodProducts_140) * 100 * 100) / 100 : 0;
+  const smallPerc_140 = goodProducts_140 > 0 ? Math.round((totalSmall_140 / goodProducts_140) * 100 * 100) / 100 : 0;
+  const verySmallPerc_140 = goodProducts_140 > 0 ? Math.round((totalVerySmall_140 / goodProducts_140) * 100 * 100) / 100 : 0;
+  const defectPerc_140 = totalAll_140 > 0 ? Math.round((totalDefect_140 / totalAll_140) * 100 * 100) / 100 : 0;
+  const destroyedPerc_140 = totalAll_140 > 0 ? Math.round((totalDestroyed_140 / totalAll_140) * 100 * 100) / 100 : 0;
+  const normalPerc_140 = totalAll_140 > 0 ? Math.round((goodProducts_140 / totalAll_140) * 100 * 100) / 100 : 0;
+
+  const largeW_140 = p(after140Form.large_weight) || 1;
+  const smallW_140 = p(after140Form.small_weight) || 0.7;
+  const verySmallW_140 = p(after140Form.very_small_weight) || 0.3;
+  const firstPred_140 = p(after140Form.first_prediction_product);
+  const predictionProductKg_140 = useMemo(() => {
+    const normalFrac = normalPerc_140 / 100;
+    const largeFrac = largePerc_140 / 100;
+    const smallFrac = smallPerc_140 / 100;
+    const vsFrac = verySmallPerc_140 / 100;
+    return Math.round(((largeFrac * (firstPred_140 * normalFrac)) * largeW_140 + (smallFrac * (firstPred_140 * normalFrac)) * smallW_140 + (vsFrac * (firstPred_140 * normalFrac)) * verySmallW_140) * 100) / 100;
+  }, [largePerc_140, smallPerc_140, verySmallPerc_140, normalPerc_140, firstPred_140, largeW_140, smallW_140, verySmallW_140]);
+
   // ===== Photo uploads =====
   const handle60PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
@@ -255,13 +308,24 @@ const Inspections = () => {
     setUploading120Photo(false);
   };
 
+  const handle140PhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setUploading140Photo(true);
+    const filePath = `${plantationId}/${Date.now()}.${file.name.split('.').pop()}`;
+    const { error } = await supabase.storage.from('140D photo').upload(filePath, file);
+    if (error) { toast.error(error.message); setUploading140Photo(false); return; }
+    const { data: urlData } = supabase.storage.from('140D photo').getPublicUrl(filePath);
+    updateAfter140Field('photo', urlData.publicUrl);
+    setUploading140Photo(false);
+  };
+
   // ===== Fetch plantation data =====
   useEffect(() => {
     const fetchPlantation = async () => {
       if (!plantationId) return;
       const { data, error } = await supabase
         .from('plantations')
-        .select("\"plot's_month\", force_month, area, force_plant, \"60_days_after_force\", \"120_days_after_force\"")
+        .select("\"plot's_month\", force_month, area, force_plant, \"60_days_after_force\", \"120_days_after_force\", \"140_days_after_force\"")
         .eq('id', plantationId)
         .single();
       if (!error && data) setPlantationData(data as PlantationData);
@@ -294,7 +358,6 @@ const Inspections = () => {
         force_plant: plantationData.force_plant != null ? String(plantationData.force_plant) : '',
         force_date: plantationData["120_days_after_force"] ? parseISO(plantationData["120_days_after_force"]) : undefined,
       }));
-      // Fetch est_products from 60days for first_prediction_product
       const fetch60 = async () => {
         const { data } = await supabase
           .from('60days')
@@ -310,6 +373,33 @@ const Inspections = () => {
       fetch60();
     }
   }, [plantationData, dialogOpen, editId, isAfter120, plantationId]);
+
+  // Auto-fill after140Form + fetch est_products from 60days
+  useEffect(() => {
+    if (plantationData && dialogOpen && !editId && isAfter140) {
+      setAfter140Form(prev => ({
+        ...prev,
+        m_y_plot: plantationData["plot's_month"] || '',
+        m_y_force: plantationData.force_month || '',
+        area: plantationData.area != null ? String(plantationData.area) : '',
+        force_plant: plantationData.force_plant != null ? String(plantationData.force_plant) : '',
+        force_date: plantationData["140_days_after_force"] ? parseISO(plantationData["140_days_after_force"]) : undefined,
+      }));
+      const fetch60 = async () => {
+        const { data } = await supabase
+          .from('60days')
+          .select('est_products')
+          .eq('plantationid', plantationId!)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+        if (data?.est_products != null) {
+          setAfter140Form(prev => ({ ...prev, first_prediction_product: String(data.est_products) }));
+        }
+      };
+      fetch60();
+    }
+  }, [plantationData, dialogOpen, editId, isAfter140, plantationId]);
 
   const fetchData = async () => {
     if (!plantationId || !type || !config) return;
@@ -328,6 +418,7 @@ const Inspections = () => {
   const updateField = (field: keyof InspectionForm, value: any) => setForm(prev => ({ ...prev, [field]: value }));
   const updateAfter60Field = (field: keyof After60Form, value: any) => setAfter60Form(prev => ({ ...prev, [field]: value }));
   const updateAfter120Field = (field: keyof After120Form, value: any) => setAfter120Form(prev => ({ ...prev, [field]: value }));
+  const updateAfter140Field = (field: keyof After140Form, value: any) => setAfter140Form(prev => ({ ...prev, [field]: value }));
   const updateHarvestField = (field: keyof HarvestPlanForm, value: any) => setHarvestForm(prev => ({ ...prev, [field]: value }));
 
   const handleSave = async () => {
@@ -433,6 +524,52 @@ const Inspections = () => {
         const { error } = await supabase.from('120days').insert([payload] as any);
         if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
       }
+    } else if (isAfter140 && config) {
+      const payload: Record<string, unknown> = {
+        id: editId || crypto.randomUUID(), platationid: plantationId!,
+        m_y_plot: after140Form.m_y_plot || null, m_y_force: after140Form.m_y_force || null,
+        area: after140Form.area ? parseFloat(after140Form.area) : null,
+        force_plant: after140Form.force_plant ? parseFloat(after140Form.force_plant) : null,
+        force_date: after140Form.force_date ? format(after140Form.force_date, 'yyyy-MM-dd') : null,
+        inspection_date: after140Form.inspection_date ? format(after140Form.inspection_date, 'yyyy-MM-dd') : null,
+        large_row1: p(after140Form.large_row1) || null, small_row1: p(after140Form.small_row1) || null,
+        very_small_row1: p(after140Form.very_small_row1) || null, defect_row1: p(after140Form.defect_row1) || null,
+        destroyed_row1: p(after140Form.destroyed_row1) || null, total_row1: totalRow1_140 || null,
+        large_row2: p(after140Form.large_row2) || null, small_row2: p(after140Form.small_row2) || null,
+        very_small_row2: p(after140Form.very_small_row2) || null, defect_row2: p(after140Form.defect_row2) || null,
+        destroyed_row2: p(after140Form.destroyed_row2) || null, total_row2: totalRow2_140 || null,
+        large_row3: p(after140Form.large_row3) || null, small_row3: p(after140Form.small_row3) || null,
+        very_small_row3: p(after140Form.very_small_row3) || null, defect_row3: p(after140Form.defect_row3) || null,
+        destroyed_row3: p(after140Form.destroyed_row3) || null, total_row3: totalRow3_140 || null,
+        nitrate_row1_no1: p(after140Form.nitrate_row1_no1) || null, nitrate_row1_no2: p(after140Form.nitrate_row1_no2) || null,
+        nitrate_row1_no3: p(after140Form.nitrate_row1_no3) || null, avg_nitrate_row1: avgNitrateRow1_140 || null,
+        nitrate_row2_no1: p(after140Form.nitrate_row2_no1) || null, nitrate_row2_no2: p(after140Form.nitrate_row2_no2) || null,
+        nitrate_row2_no3: p(after140Form.nitrate_row2_no3) || null, avg_nitrate_row2: avgNitrateRow2_140 || null,
+        nitrate_row3_no1: p(after140Form.nitrate_row3_no1) || null, nitrate_row3_no2: p(after140Form.nitrate_row3_no2) || null,
+        nitrate_row3_no3: p(after140Form.nitrate_row3_no3) || null, avg_nitrate_row3: avgNitrateRow3_140 || null,
+        avg_nitrate_no1: avgNitrateNo1_140 || null, avg_nitrate_no2: avgNitrateNo2_140 || null,
+        avg_nitrate_no3: avgNitrateNo3_140 || null, avg_total_nitrate: avgTotalNitrate_140 || null,
+        total_large: totalLarge_140 || null, total_small: totalSmall_140 || null,
+        total_very_small: totalVerySmall_140 || null, total_defect: totalDefect_140 || null,
+        total_destroyed: totalDestroyed_140 || null, total_all: totalAll_140 || null,
+        large_perc: largePerc_140 || null, small_perc: smallPerc_140 || null,
+        very_small_perc: verySmallPerc_140 || null, defect_perc: defectPerc_140 || null,
+        destroyed_perc: destroyedPerc_140 || null, normal_perc: normalPerc_140 || null,
+        good_products: goodProducts_140 || null,
+        large_weight: p(after140Form.large_weight) || 1,
+        small_weight: p(after140Form.small_weight) || 0.7,
+        very_small_weight: p(after140Form.very_small_weight) || 0.3,
+        first_prediction_product: p(after140Form.first_prediction_product) || null,
+        prediction_product_kg: predictionProductKg_140 || null,
+        photo: after140Form.photo || null,
+      };
+      if (editId) {
+        const { error } = await supabase.from('140days').update(payload).eq('id', editId as string);
+        if (error) toast.error(error.message); else { toast.success('Updated'); setDialogOpen(false); }
+      } else {
+        const { error } = await supabase.from('140days').insert([payload] as any);
+        if (error) toast.error(error.message); else { toast.success('Created'); setDialogOpen(false); }
+      }
     } else if (isHarvestPlan && config) {
       const payload: Record<string, unknown> = {
         id: editId || crypto.randomUUID(), plantationid: plantationId!,
@@ -466,7 +603,7 @@ const Inspections = () => {
       }
     }
     setForm(emptyForm); setAfter60Form(emptyAfter60Form); setAfter120Form(emptyAfter120Form);
-    setHarvestForm(emptyHarvestPlanForm); setEditId(null); fetchData();
+    setAfter140Form(emptyAfter140Form); setHarvestForm(emptyHarvestPlanForm); setEditId(null); fetchData();
   };
 
   const handleDelete = async (id: string | number) => {
@@ -531,6 +668,36 @@ const Inspections = () => {
         first_prediction_product: rec.first_prediction_product != null ? String(rec.first_prediction_product) : '',
         photo: (rec.photo as string) || '',
       });
+    } else if (isAfter140) {
+      setAfter140Form({
+        m_y_plot: (rec.m_y_plot as string) || '', m_y_force: (rec.m_y_force as string) || '',
+        area: rec.area != null ? String(rec.area) : '', force_plant: rec.force_plant != null ? String(rec.force_plant) : '',
+        force_date: rec.force_date ? parseISO(rec.force_date as string) : undefined,
+        inspection_date: rec.inspection_date ? parseISO(rec.inspection_date as string) : undefined,
+        large_row1: rec.large_row1 != null ? String(rec.large_row1) : '', small_row1: rec.small_row1 != null ? String(rec.small_row1) : '',
+        very_small_row1: rec.very_small_row1 != null ? String(rec.very_small_row1) : '', defect_row1: rec.defect_row1 != null ? String(rec.defect_row1) : '',
+        destroyed_row1: rec.destroyed_row1 != null ? String(rec.destroyed_row1) : '',
+        large_row2: rec.large_row2 != null ? String(rec.large_row2) : '', small_row2: rec.small_row2 != null ? String(rec.small_row2) : '',
+        very_small_row2: rec.very_small_row2 != null ? String(rec.very_small_row2) : '', defect_row2: rec.defect_row2 != null ? String(rec.defect_row2) : '',
+        destroyed_row2: rec.destroyed_row2 != null ? String(rec.destroyed_row2) : '',
+        large_row3: rec.large_row3 != null ? String(rec.large_row3) : '', small_row3: rec.small_row3 != null ? String(rec.small_row3) : '',
+        very_small_row3: rec.very_small_row3 != null ? String(rec.very_small_row3) : '', defect_row3: rec.defect_row3 != null ? String(rec.defect_row3) : '',
+        destroyed_row3: rec.destroyed_row3 != null ? String(rec.destroyed_row3) : '',
+        nitrate_row1_no1: rec.nitrate_row1_no1 != null ? String(rec.nitrate_row1_no1) : '',
+        nitrate_row1_no2: rec.nitrate_row1_no2 != null ? String(rec.nitrate_row1_no2) : '',
+        nitrate_row1_no3: rec.nitrate_row1_no3 != null ? String(rec.nitrate_row1_no3) : '',
+        nitrate_row2_no1: rec.nitrate_row2_no1 != null ? String(rec.nitrate_row2_no1) : '',
+        nitrate_row2_no2: rec.nitrate_row2_no2 != null ? String(rec.nitrate_row2_no2) : '',
+        nitrate_row2_no3: rec.nitrate_row2_no3 != null ? String(rec.nitrate_row2_no3) : '',
+        nitrate_row3_no1: rec.nitrate_row3_no1 != null ? String(rec.nitrate_row3_no1) : '',
+        nitrate_row3_no2: rec.nitrate_row3_no2 != null ? String(rec.nitrate_row3_no2) : '',
+        nitrate_row3_no3: rec.nitrate_row3_no3 != null ? String(rec.nitrate_row3_no3) : '',
+        large_weight: rec.large_weight != null ? String(rec.large_weight) : '1',
+        small_weight: rec.small_weight != null ? String(rec.small_weight) : '0.7',
+        very_small_weight: rec.very_small_weight != null ? String(rec.very_small_weight) : '0.3',
+        first_prediction_product: rec.first_prediction_product != null ? String(rec.first_prediction_product) : '',
+        photo: (rec.photo as string) || '',
+      });
     } else if (isHarvestPlan) {
       setHarvestForm({
         week: (rec.week as string) || '',
@@ -553,7 +720,7 @@ const Inspections = () => {
 
   const openCreate = () => {
     setForm(emptyForm); setAfter60Form(emptyAfter60Form); setAfter120Form(emptyAfter120Form);
-    setHarvestForm(emptyHarvestPlanForm); setEditId(null); setDialogOpen(true);
+    setAfter140Form(emptyAfter140Form); setHarvestForm(emptyHarvestPlanForm); setEditId(null); setDialogOpen(true);
   };
 
   const renderDatePicker = (label: string, value: Date | undefined, onChange: (d: Date | undefined) => void) => (
@@ -585,6 +752,162 @@ const Inspections = () => {
       <Label>{label}</Label>
       <Input value={value} readOnly className="bg-muted" />
     </div>
+  );
+
+  // Reusable 120/140 form renderer
+  const render120_140Form = (
+    formData: After120Form,
+    updateFn: (field: keyof After120Form, value: any) => void,
+    calcs: {
+      totalRow1: number; totalRow2: number; totalRow3: number;
+      avgNR1: number; avgNR2: number; avgNR3: number;
+      avgNN1: number; avgNN2: number; avgNN3: number; avgTotalN: number;
+      tLarge: number; tSmall: number; tVS: number; tDefect: number; tDestroyed: number;
+      tAll: number; gProducts: number;
+      lPerc: number; sPerc: number; vsPerc: number; dPerc: number; destPerc: number; nPerc: number;
+      predKg: number;
+    },
+    photoUploader: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    uploadingPhoto: boolean,
+    bucketLabel: string
+  ) => (
+    <>
+      {renderReadOnly("Plot's month", formData.m_y_plot)}
+      {renderReadOnly('Force month', formData.m_y_force)}
+      {renderReadOnly('Area', formData.area)}
+      {renderReadOnly('Force plant', formData.force_plant)}
+      {renderReadOnly('Force date', formData.force_date ? format(formData.force_date, 'PPP') : '')}
+      {renderDatePicker('Inspection date', formData.inspection_date, d => updateFn('inspection_date', d))}
+
+      {/* Row 1 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">แถวที่ 1</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกใหญ่', formData.large_row1, v => updateFn('large_row1', v))}
+          {renderNumInput('ลูกเล็ก', formData.small_row1, v => updateFn('small_row1', v))}
+          {renderNumInput('ลูกจิ๋ว', formData.very_small_row1, v => updateFn('very_small_row1', v))}
+          {renderNumInput('ตำหนิอื่นๆ', formData.defect_row1, v => updateFn('defect_row1', v))}
+          {renderNumInput('สัตว์ทำลาย', formData.destroyed_row1, v => updateFn('destroyed_row1', v))}
+          {renderNumInput('ผลรวมแถวที่1', String(calcs.totalRow1), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Row 2 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">แถวที่ 2</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกใหญ่', formData.large_row2, v => updateFn('large_row2', v))}
+          {renderNumInput('ลูกเล็ก', formData.small_row2, v => updateFn('small_row2', v))}
+          {renderNumInput('ลูกจิ๋ว', formData.very_small_row2, v => updateFn('very_small_row2', v))}
+          {renderNumInput('ตำหนิอื่นๆ', formData.defect_row2, v => updateFn('defect_row2', v))}
+          {renderNumInput('สัตว์ทำลาย', formData.destroyed_row2, v => updateFn('destroyed_row2', v))}
+          {renderNumInput('ผลรวมแถวที่2', String(calcs.totalRow2), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Row 3 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">แถวที่ 3</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกใหญ่', formData.large_row3, v => updateFn('large_row3', v))}
+          {renderNumInput('ลูกเล็ก', formData.small_row3, v => updateFn('small_row3', v))}
+          {renderNumInput('ลูกจิ๋ว', formData.very_small_row3, v => updateFn('very_small_row3', v))}
+          {renderNumInput('ตำหนิอื่นๆ', formData.defect_row3, v => updateFn('defect_row3', v))}
+          {renderNumInput('สัตว์ทำลาย', formData.destroyed_row3, v => updateFn('destroyed_row3', v))}
+          {renderNumInput('ผลรวมแถวที่3', String(calcs.totalRow3), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Nitrate Row 1 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 1</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกที่1', formData.nitrate_row1_no1, v => updateFn('nitrate_row1_no1', v))}
+          {renderNumInput('ลูกที่2', formData.nitrate_row1_no2, v => updateFn('nitrate_row1_no2', v))}
+          {renderNumInput('ลูกที่3', formData.nitrate_row1_no3, v => updateFn('nitrate_row1_no3', v))}
+          {renderNumInput('ค่าเฉลี่ย', String(calcs.avgNR1), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Nitrate Row 2 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 2</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกที่1', formData.nitrate_row2_no1, v => updateFn('nitrate_row2_no1', v))}
+          {renderNumInput('ลูกที่2', formData.nitrate_row2_no2, v => updateFn('nitrate_row2_no2', v))}
+          {renderNumInput('ลูกที่3', formData.nitrate_row2_no3, v => updateFn('nitrate_row2_no3', v))}
+          {renderNumInput('ค่าเฉลี่ย', String(calcs.avgNR2), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Nitrate Row 3 */}
+      <div className="border-t pt-3 mt-3">
+        <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 3</p>
+        <div className="grid grid-cols-2 gap-2">
+          {renderNumInput('ลูกที่1', formData.nitrate_row3_no1, v => updateFn('nitrate_row3_no1', v))}
+          {renderNumInput('ลูกที่2', formData.nitrate_row3_no2, v => updateFn('nitrate_row3_no2', v))}
+          {renderNumInput('ลูกที่3', formData.nitrate_row3_no3, v => updateFn('nitrate_row3_no3', v))}
+          {renderNumInput('ค่าเฉลี่ย', String(calcs.avgNR3), () => {}, true)}
+        </div>
+      </div>
+
+      {/* Nitrate averages */}
+      <div className="border-t pt-3 mt-3 space-y-3">
+        {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่1', calcs.avgNN1)}
+        {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่2', calcs.avgNN2)}
+        {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่3', calcs.avgNN3)}
+        {renderReadOnly('ค่าเฉลี่ยไนเตรทรวม', calcs.avgTotalN)}
+      </div>
+
+      {/* Totals & percentages */}
+      <div className="border-t pt-3 mt-3 space-y-3">
+        {renderReadOnly('ผลรวมลูกใหญ่', calcs.tLarge)}
+        {renderReadOnly('ผลรวมลูกเล็ก', calcs.tSmall)}
+        {renderReadOnly('ผลรวมลูกจิ๋ว', calcs.tVS)}
+        {renderReadOnly('ผลรวมตำหนิอื่นๆ', calcs.tDefect)}
+        {renderReadOnly('ผลรวมสัตว์ทำลาย', calcs.tDestroyed)}
+        {renderReadOnly('เปอร์เซนต์ลูกใหญ่ (%)', calcs.lPerc)}
+        {renderReadOnly('เปอร์เซนต์ลูกเล็ก (%)', calcs.sPerc)}
+        {renderReadOnly('เปอร์เซนต์ลูกจิ๋ว (%)', calcs.vsPerc)}
+        {renderReadOnly('เปอร์เซนต์ตำหนิอื่นๆ (%)', calcs.dPerc)}
+        {renderReadOnly('เปอร์เซนต์สัตว์ทำลาย (%)', calcs.destPerc)}
+        {renderReadOnly('เปอร์เซนต์ลูกปกติ (%)', calcs.nPerc)}
+        {renderReadOnly('ลูกปกติ (good_products)', calcs.gProducts)}
+        {renderReadOnly('ผลรวมทั้งหมด (total_all)', calcs.tAll)}
+      </div>
+
+      {/* Weights */}
+      <div className="border-t pt-3 mt-3 space-y-3">
+        {renderNumInput('น้ำหนักเฉลี่ยลูกใหญ่ (default 1.0)', formData.large_weight, v => updateFn('large_weight', v))}
+        {renderNumInput('น้ำหนักเฉลี่ยลูกเล็ก (default 0.7)', formData.small_weight, v => updateFn('small_weight', v))}
+        {renderNumInput('น้ำหนักเฉลี่ยลูกจิ๋ว (default 0.3)', formData.very_small_weight, v => updateFn('very_small_weight', v))}
+      </div>
+
+      {/* Prediction */}
+      <div className="border-t pt-3 mt-3 space-y-3">
+        {renderReadOnly('ผลผลิตที่คาดหมายครั้งแรก', formData.first_prediction_product)}
+        {renderReadOnly('ผลผลิตที่คาดหมาย (Kg.)', calcs.predKg)}
+      </div>
+
+      {/* Photo */}
+      <div className="border-t pt-3 mt-3">
+        <Label>Photo</Label>
+        {formData.photo && (
+          <div className="relative w-full h-48 rounded-md overflow-hidden border border-border mb-2">
+            <img src={formData.photo} alt={bucketLabel} className="w-full h-full object-cover" />
+            <Button size="icon" variant="destructive" className="absolute top-2 right-2 h-7 w-7" onClick={() => updateFn('photo', '')}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+        <label className="flex items-center gap-2 cursor-pointer">
+          <Button variant="outline" size="sm" asChild disabled={uploadingPhoto}>
+            <span><Upload className="h-4 w-4 mr-1" />{uploadingPhoto ? 'Uploading...' : 'Upload Photo'}</span>
+          </Button>
+          <input type="file" accept="image/*" className="hidden" onChange={photoUploader} disabled={uploadingPhoto} />
+        </label>
+      </div>
+    </>
   );
 
   return (
@@ -683,144 +1006,25 @@ const Inspections = () => {
                   </div>
                 </>
               ) : isAfter120 ? (
-                <>
-                  {/* 1-6: Auto-filled from plantation */}
-                  {renderReadOnly("Plot's month", after120Form.m_y_plot)}
-                  {renderReadOnly('Force month', after120Form.m_y_force)}
-                  {renderReadOnly('Area', after120Form.area)}
-                  {renderReadOnly('Force plant', after120Form.force_plant)}
-                  {renderReadOnly('Force date', after120Form.force_date ? format(after120Form.force_date, 'PPP') : '')}
-                  {renderDatePicker('Inspection date', after120Form.inspection_date, d => updateAfter120Field('inspection_date', d))}
-
-                  {/* Row 1: fields 7-12 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">แถวที่ 1</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกใหญ่', after120Form.large_row1, v => updateAfter120Field('large_row1', v))}
-                      {renderNumInput('ลูกเล็ก', after120Form.small_row1, v => updateAfter120Field('small_row1', v))}
-                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row1, v => updateAfter120Field('very_small_row1', v))}
-                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row1, v => updateAfter120Field('defect_row1', v))}
-                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row1, v => updateAfter120Field('destroyed_row1', v))}
-                      {renderNumInput('ผลรวมแถวที่1', String(totalRow1_120), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Row 2: fields 13-18 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">แถวที่ 2</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกใหญ่', after120Form.large_row2, v => updateAfter120Field('large_row2', v))}
-                      {renderNumInput('ลูกเล็ก', after120Form.small_row2, v => updateAfter120Field('small_row2', v))}
-                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row2, v => updateAfter120Field('very_small_row2', v))}
-                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row2, v => updateAfter120Field('defect_row2', v))}
-                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row2, v => updateAfter120Field('destroyed_row2', v))}
-                      {renderNumInput('ผลรวมแถวที่2', String(totalRow2_120), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Row 3: fields 19-24 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">แถวที่ 3</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกใหญ่', after120Form.large_row3, v => updateAfter120Field('large_row3', v))}
-                      {renderNumInput('ลูกเล็ก', after120Form.small_row3, v => updateAfter120Field('small_row3', v))}
-                      {renderNumInput('ลูกจิ๋ว', after120Form.very_small_row3, v => updateAfter120Field('very_small_row3', v))}
-                      {renderNumInput('ตำหนิอื่นๆ', after120Form.defect_row3, v => updateAfter120Field('defect_row3', v))}
-                      {renderNumInput('สัตว์ทำลาย', after120Form.destroyed_row3, v => updateAfter120Field('destroyed_row3', v))}
-                      {renderNumInput('ผลรวมแถวที่3', String(totalRow3_120), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Nitrate Row 1: fields 25-28 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 1</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกที่1', after120Form.nitrate_row1_no1, v => updateAfter120Field('nitrate_row1_no1', v))}
-                      {renderNumInput('ลูกที่2', after120Form.nitrate_row1_no2, v => updateAfter120Field('nitrate_row1_no2', v))}
-                      {renderNumInput('ลูกที่3', after120Form.nitrate_row1_no3, v => updateAfter120Field('nitrate_row1_no3', v))}
-                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow1), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Nitrate Row 2: fields 29-32 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 2</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกที่1', after120Form.nitrate_row2_no1, v => updateAfter120Field('nitrate_row2_no1', v))}
-                      {renderNumInput('ลูกที่2', after120Form.nitrate_row2_no2, v => updateAfter120Field('nitrate_row2_no2', v))}
-                      {renderNumInput('ลูกที่3', after120Form.nitrate_row2_no3, v => updateAfter120Field('nitrate_row2_no3', v))}
-                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow2), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Nitrate Row 3: fields 33-36 */}
-                  <div className="border-t pt-3 mt-3">
-                    <p className="font-semibold text-sm mb-2">ไนเตรท แถวที่ 3</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {renderNumInput('ลูกที่1', after120Form.nitrate_row3_no1, v => updateAfter120Field('nitrate_row3_no1', v))}
-                      {renderNumInput('ลูกที่2', after120Form.nitrate_row3_no2, v => updateAfter120Field('nitrate_row3_no2', v))}
-                      {renderNumInput('ลูกที่3', after120Form.nitrate_row3_no3, v => updateAfter120Field('nitrate_row3_no3', v))}
-                      {renderNumInput('ค่าเฉลี่ย', String(avgNitrateRow3), () => {}, true)}
-                    </div>
-                  </div>
-
-                  {/* Nitrate averages: fields 37-40 */}
-                  <div className="border-t pt-3 mt-3 space-y-3">
-                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่1', avgNitrateNo1)}
-                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่2', avgNitrateNo2)}
-                    {renderReadOnly('ค่าเฉลี่ยไนเตรทลูกที่3', avgNitrateNo3)}
-                    {renderReadOnly('ค่าเฉลี่ยไนเตรทรวม', avgTotalNitrate)}
-                  </div>
-
-                  {/* Totals & percentages: fields 41-53 */}
-                  <div className="border-t pt-3 mt-3 space-y-3">
-                    {renderReadOnly('ผลรวมลูกใหญ่', totalLarge)}
-                    {renderReadOnly('ผลรวมลูกเล็ก', totalSmall)}
-                    {renderReadOnly('ผลรวมลูกจิ๋ว', totalVerySmall)}
-                    {renderReadOnly('ผลรวมตำหนิอื่นๆ', totalDefect)}
-                    {renderReadOnly('ผลรวมสัตว์ทำลาย', totalDestroyed)}
-                    {renderReadOnly('เปอร์เซนต์ลูกใหญ่ (%)', largePerc)}
-                    {renderReadOnly('เปอร์เซนต์ลูกเล็ก (%)', smallPerc)}
-                    {renderReadOnly('เปอร์เซนต์ลูกจิ๋ว (%)', verySmallPerc)}
-                    {renderReadOnly('เปอร์เซนต์ตำหนิอื่นๆ (%)', defectPerc)}
-                    {renderReadOnly('เปอร์เซนต์สัตว์ทำลาย (%)', destroyedPerc)}
-                    {renderReadOnly('เปอร์เซนต์ลูกปกติ (%)', normalPerc)}
-                    {renderReadOnly('ลูกปกติ (good_products)', goodProducts)}
-                    {renderReadOnly('ผลรวมทั้งหมด (total_all)', totalAll_120)}
-                  </div>
-
-                  {/* Weights: fields 54-56 */}
-                  <div className="border-t pt-3 mt-3 space-y-3">
-                    {renderNumInput('น้ำหนักเฉลี่ยลูกใหญ่ (default 1.0)', after120Form.large_weight, v => updateAfter120Field('large_weight', v))}
-                    {renderNumInput('น้ำหนักเฉลี่ยลูกเล็ก (default 0.7)', after120Form.small_weight, v => updateAfter120Field('small_weight', v))}
-                    {renderNumInput('น้ำหนักเฉลี่ยลูกจิ๋ว (default 0.3)', after120Form.very_small_weight, v => updateAfter120Field('very_small_weight', v))}
-                  </div>
-
-                  {/* Prediction: fields 57-58 */}
-                  <div className="border-t pt-3 mt-3 space-y-3">
-                    {renderReadOnly('ผลผลิตที่คาดหมายครั้งแรก', after120Form.first_prediction_product)}
-                    {renderReadOnly('ผลผลิตที่คาดหมาย (Kg.)', predictionProductKg)}
-                  </div>
-
-                  {/* Photo: field 59 */}
-                  <div className="border-t pt-3 mt-3">
-                    <Label>Photo</Label>
-                    {after120Form.photo && (
-                      <div className="relative w-full h-48 rounded-md overflow-hidden border border-border mb-2">
-                        <img src={after120Form.photo} alt="120D" className="w-full h-full object-cover" />
-                        <Button size="icon" variant="destructive" className="absolute top-2 right-2 h-7 w-7" onClick={() => updateAfter120Field('photo', '')}>
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <Button variant="outline" size="sm" asChild disabled={uploading120Photo}>
-                        <span><Upload className="h-4 w-4 mr-1" />{uploading120Photo ? 'Uploading...' : 'Upload Photo'}</span>
-                      </Button>
-                      <input type="file" accept="image/*" className="hidden" onChange={handle120PhotoUpload} disabled={uploading120Photo} />
-                    </label>
-                  </div>
-                </>
+                render120_140Form(after120Form, updateAfter120Field, {
+                  totalRow1: totalRow1_120, totalRow2: totalRow2_120, totalRow3: totalRow3_120,
+                  avgNR1: avgNitrateRow1, avgNR2: avgNitrateRow2, avgNR3: avgNitrateRow3,
+                  avgNN1: avgNitrateNo1, avgNN2: avgNitrateNo2, avgNN3: avgNitrateNo3, avgTotalN: avgTotalNitrate,
+                  tLarge: totalLarge, tSmall: totalSmall, tVS: totalVerySmall, tDefect: totalDefect, tDestroyed: totalDestroyed,
+                  tAll: totalAll_120, gProducts: goodProducts,
+                  lPerc: largePerc, sPerc: smallPerc, vsPerc: verySmallPerc, dPerc: defectPerc, destPerc: destroyedPerc, nPerc: normalPerc,
+                  predKg: predictionProductKg,
+                }, handle120PhotoUpload, uploading120Photo, '120D')
+              ) : isAfter140 ? (
+                render120_140Form(after140Form, updateAfter140Field, {
+                  totalRow1: totalRow1_140, totalRow2: totalRow2_140, totalRow3: totalRow3_140,
+                  avgNR1: avgNitrateRow1_140, avgNR2: avgNitrateRow2_140, avgNR3: avgNitrateRow3_140,
+                  avgNN1: avgNitrateNo1_140, avgNN2: avgNitrateNo2_140, avgNN3: avgNitrateNo3_140, avgTotalN: avgTotalNitrate_140,
+                  tLarge: totalLarge_140, tSmall: totalSmall_140, tVS: totalVerySmall_140, tDefect: totalDefect_140, tDestroyed: totalDestroyed_140,
+                  tAll: totalAll_140, gProducts: goodProducts_140,
+                  lPerc: largePerc_140, sPerc: smallPerc_140, vsPerc: verySmallPerc_140, dPerc: defectPerc_140, destPerc: destroyedPerc_140, nPerc: normalPerc_140,
+                  predKg: predictionProductKg_140,
+                }, handle140PhotoUpload, uploading140Photo, '140D')
               ) : isHarvestPlan ? (
                 <>
                   <div>
@@ -866,7 +1070,7 @@ const Inspections = () => {
                     <FileText className="h-4 w-4" />
                     {isInspectionTable && rec.date
                       ? format(parseISO(rec.date as string), 'PPP')
-                      : (isAfter60 || isAfter120) && rec.inspection_date
+                      : (isAfter60 || isAfter120 || isAfter140) && rec.inspection_date
                       ? format(parseISO(rec.inspection_date as string), 'PPP')
                       : isHarvestPlan && rec.week
                       ? (rec.week as string)
@@ -879,7 +1083,7 @@ const Inspections = () => {
                     )}
                   </span>
                   <div className="flex gap-1">
-                    {(isInspectionTable || isAfter60 || isAfter120 || isHarvestPlan) && (
+                    {(isInspectionTable || isAfter60 || isAfter120 || isAfter140 || isHarvestPlan) && (
                       <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(rec)}>
                         <Edit className="h-3.5 w-3.5" />
                       </Button>
@@ -910,7 +1114,7 @@ const Inspections = () => {
                   {rec.plant_photo && <img src={rec.plant_photo as string} alt="Plant" className="w-full h-32 object-cover rounded-md mt-2" />}
                 </CardContent>
               )}
-              {isAfter120 && (
+              {(isAfter120 || isAfter140) && (
                 <CardContent className="text-sm space-y-1">
                   {rec.m_y_plot && <p><span className="text-muted-foreground">Plot's month:</span> {rec.m_y_plot as string}</p>}
                   {rec.area != null && <p><span className="text-muted-foreground">Area:</span> {String(rec.area)}</p>}
@@ -919,7 +1123,7 @@ const Inspections = () => {
                   {rec.normal_perc != null && <p><span className="text-muted-foreground">ปกติ:</span> {String(rec.normal_perc)}%</p>}
                   {rec.avg_total_nitrate != null && <p><span className="text-muted-foreground">ไนเตรทเฉลี่ย:</span> {String(rec.avg_total_nitrate)}</p>}
                   {rec.prediction_product_kg != null && <p><span className="text-muted-foreground">คาดหมาย (Kg.):</span> {String(rec.prediction_product_kg)}</p>}
-                  {rec.photo && <img src={rec.photo as string} alt="120D" className="w-full h-32 object-cover rounded-md mt-2" />}
+                  {rec.photo && <img src={rec.photo as string} alt={isAfter120 ? '120D' : '140D'} className="w-full h-32 object-cover rounded-md mt-2" />}
                 </CardContent>
               )}
               {isHarvestPlan && (
