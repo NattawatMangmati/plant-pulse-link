@@ -36,7 +36,7 @@ const Auth = () => {
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary">
             <Leaf className="h-6 w-6 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl">Farm Inspection System</CardTitle>
+          <CardTitle className="text-2xl">PPI : Agri pro</CardTitle>
           <CardDescription>
             {isLogin ? 'Sign in to your account' : 'Create a new account'}
           </CardDescription>
