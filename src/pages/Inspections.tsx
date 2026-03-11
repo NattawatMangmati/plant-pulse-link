@@ -196,7 +196,7 @@ const Inspections = () => {
   const nonFruitingPerc = useMemo(() => totalAll_60 === 0 ? 0 : Math.round((totalNonFruiting / totalAll_60) * 100 * 100) / 100, [totalNonFruiting, totalAll_60]);
   const productivePlant = useMemo(() => Math.round((fruitingPerc * (parseFloat(after60Form.force_plant) || 0)) / 100), [fruitingPerc, after60Form.force_plant]);
   // Fixed: est_products = ((totalFruiting * force_plant) / 100) rounded to 2 decimals
-  const estProducts = useMemo(() => Math.round((totalFruiting * (parseFloat(after60Form.force_plant) || 0)) / 100), [totalFruiting, after60Form.force_plant]);
+  const estProducts = useMemo(() => Math.round((fruitingPerc * (parseFloat(after60Form.force_plant) || 0)) / 100), [fruitingPerc, after60Form.force_plant]);
 
   // ===== After 120 auto-calc =====
   const p = (v: string) => parseFloat(v) || 0;
