@@ -198,7 +198,7 @@ const Inspections = () => {
   // Fixed: est_products = ((totalFruiting * force_plant) / 100) rounded to 2 decimals
   const estProducts = useMemo(() => {
     const fp = parseFloat(after60Form.force_plant) || 0;
-    return Math.round(((totalFruiting * fp) / 100) * 100) / 100;
+    return Math.round(((fruitingPerc * fp) / 100) * 100) / 100;
   }, [totalFruiting, after60Form.force_plant]);
 
   // ===== After 120 auto-calc =====
