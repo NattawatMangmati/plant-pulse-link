@@ -31,20 +31,37 @@ const Layout = ({ children }: { children: ReactNode }) => {
       </header>
 
       {crumbs.length > 0 && (
-        <div className="container py-2">
-          <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-            <button onClick={() => navigate('/')} className="hover:text-foreground flex items-center gap-1">
-              <Home className="h-3.5 w-3.5" /> Home
+  <div className="container py-2">
+    <nav className="flex items-center gap-1 text-sm text-muted-foreground">
+
+      <button
+        onClick={() => navigate('/')}
+        className="hover:text-foreground flex items-center gap-1"
+      >
+        <Home className="h-3.5 w-3.5" /> Home
+      </button>
+
+      {crumbs.map((crumb, i) => {
+        const path = "/" + crumbs.slice(0, i + 1).join("/");
+
+        return (
+          <span key={i} className="flex items-center gap-1">
+            <ChevronRight className="h-3.5 w-3.5" />
+
+            <button
+              onClick={() => navigate(path)}
+              className="capitalize hover:text-foreground"
+            >
+              {decodeURIComponent(crumb).replace(/-/g, " ")}
             </button>
-            {crumbs.map((crumb, i) => (
-              <span key={i} className="flex items-center gap-1">
-                <ChevronRight className="h-3.5 w-3.5" />
-                <span className="capitalize">{decodeURIComponent(crumb).replace(/-/g, ' ')}</span>
-              </span>
-            ))}
-          </nav>
-        </div>
-      )}
+
+          </span>
+        );
+      })}
+
+    </nav>
+  </div>
+)}
 
       <main className="container py-6">{children}</main>
     </div>
