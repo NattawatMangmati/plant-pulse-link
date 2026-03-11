@@ -30,60 +30,21 @@ const Layout = ({ children }: { children: ReactNode }) => {
         </div>
       </header>
 
-  import { useNavigate, useLocation } from "react-router-dom";
-import { Home, ChevronRight } from "lucide-react";
-
-const navigate = useNavigate();
-const location = useLocation();
-
-// แยก path จาก URL
-const crumbs = location.pathname.split("/").filter(Boolean);
-
 {crumbs.length > 0 && (
-  <div className="container py-2">
-    <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-
-      {/* Home */}
-      <button
-        onClick={() => navigate("/")}
-        className="hover:text-foreground flex items-center gap-1"
-      >
-        <Home className="h-3.5 w-3.5" />
-        Home
-      </button>
-
-      {/* Breadcrumb items */}
-      {crumbs.map((crumb, i) => {
-
-        const path = "/" + crumbs.slice(0, i + 1).join("/");
-        const isLast = i === crumbs.length - 1;
-
-        return (
-          <span key={i} className="flex items-center gap-1">
-            <ChevronRight className="h-3.5 w-3.5" />
-
-            {isLast ? (
-              // หน้า current (ไม่ต้องกด)
-              <span className="capitalize text-foreground">
-                {decodeURIComponent(crumb).replace(/-/g, " ")}
+        <div className="container py-2">
+          <nav className="flex items-center gap-1 text-sm text-muted-foreground">
+            <button onClick={() => navigate('/')} className="hover:text-foreground flex items-center gap-1">
+              <Home className="h-3.5 w-3.5" /> Home
+            </button>
+            {crumbs.map((crumb, i) => (
+              <span key={i} className="flex items-center gap-1">
+                <ChevronRight className="h-3.5 w-3.5" />
+                <span className="capitalize">{decodeURIComponent(crumb).replace(/-/g, ' ')}</span>
               </span>
-            ) : (
-              // หน้าอื่นกดได้
-              <button
-                onClick={() => navigate(path)}
-                className="capitalize hover:text-foreground"
-              >
-                {decodeURIComponent(crumb).replace(/-/g, " ")}
-              </button>
-            )}
-
-          </span>
-        );
-      })}
-
-    </nav>
-  </div>
-)}
+            ))}
+          </nav>
+        </div>
+      )}
 
       <main className="container py-6">{children}</main>
     </div>
