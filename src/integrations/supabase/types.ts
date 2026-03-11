@@ -280,6 +280,7 @@ export type Database = {
           nitrate_row3_no1: number | null
           nitrate_row3_no2: number | null
           nitrate_row3_no3: number | null
+          normal_perc: number | null
           photo: string | null
           platationid: string | null
           prediction_product_kg: number | null
@@ -345,6 +346,7 @@ export type Database = {
           nitrate_row3_no1?: number | null
           nitrate_row3_no2?: number | null
           nitrate_row3_no3?: number | null
+          normal_perc?: number | null
           photo?: string | null
           platationid?: string | null
           prediction_product_kg?: number | null
@@ -410,6 +412,7 @@ export type Database = {
           nitrate_row3_no1?: number | null
           nitrate_row3_no2?: number | null
           nitrate_row3_no3?: number | null
+          normal_perc?: number | null
           photo?: string | null
           platationid?: string | null
           prediction_product_kg?: number | null
@@ -820,6 +823,7 @@ export type Database = {
           phone: string | null
           photo: string | null
           position: string | null
+          User: string | null
         }
         Insert: {
           created_at?: string
@@ -830,6 +834,7 @@ export type Database = {
           phone?: string | null
           photo?: string | null
           position?: string | null
+          User?: string | null
         }
         Update: {
           created_at?: string
@@ -840,6 +845,7 @@ export type Database = {
           phone?: string | null
           photo?: string | null
           position?: string | null
+          User?: string | null
         }
         Relationships: []
       }
