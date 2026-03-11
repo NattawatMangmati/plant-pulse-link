@@ -19,7 +19,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
               <Leaf className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-foreground">Farm Inspector</span>
+            <span className="font-semibold text-foreground">PPI : Agri pro</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:block">{user?.email}</span>
