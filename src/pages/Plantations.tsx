@@ -97,7 +97,7 @@ const Plantations = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Sprout className="h-5 w-5 text-primary" />
-                  {p.plantation_name}
+                  {p.plantation_name} - {p.farmer_name}
                 </CardTitle>
                 {p.province && (
                   <p className="text-xs text-muted-foreground">
