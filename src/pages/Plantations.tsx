@@ -101,7 +101,7 @@ const Plantations = () => {
                 </CardTitle>
                 {p.province && (
                   <p className="text-xs text-muted-foreground">
-                    {[p.subdistrict, p.district, p.province].filter(Boolean).join(', ')}
+                    {[p.farmer_name, p.subdistrict, p.district, p.province].filter(Boolean).join(', ')}
                   </p>
                 )}
               </CardHeader>
