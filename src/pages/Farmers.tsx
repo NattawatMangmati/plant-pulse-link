@@ -222,7 +222,7 @@ const Farmers = () => {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Farmers</h1>
           <p className="text-muted-foreground text-sm">
-            {inspector ? `Inspector: ${inspector.Name}` : ''} · {farmers.length} farmers
+            {inspector ? `Inspector: ${inspector.['Full name']}` : ''} · {farmers.length} farmers
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
